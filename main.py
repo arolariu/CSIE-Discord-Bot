@@ -2,6 +2,7 @@ import datetime
 import logging
 
 import discord
+from discord.utils import get
 from discord.ext import commands
 
 from config import *
@@ -81,13 +82,13 @@ def server_roles(members):
             elif "VIZITATOR" == member.top_role.name:
                 r4 += 1
     except TypeError:
-        if "CIBERNETICĂ" == member.top_role.name:
+        if "CIBERNETICĂ" == members.top_role.name:
             r1 += 1
-        elif "INFORMATICĂ ECONOMICĂ" == member.top_role.name:
+        elif "INFORMATICĂ ECONOMICĂ" == members.top_role.name:
             r2 += 1
-        elif "STATISTICĂ" == member.top_role.name:
+        elif "STATISTICĂ" == members.top_role.name:
             r3 += 1
-        elif "VIZITATOR" == member.top_role.name:
+        elif "VIZITATOR" == members.top_role.name:
             r4 += 1
 
     result = {
@@ -128,18 +129,18 @@ async def server(ctx):
     role_results = server_roles(members)
     year_values = \
         f"""
-    **AN I  :** {year_results["AN I"]} membri. ({round(year_results["AN I"] * 100 / len(members), 2)}% din total.)
-    **AN II :** {year_results["AN II"]} membri. ({round(year_results["AN II"] * 100 / len(members), 2)}% din total.)
-    **AN III:** {year_results["AN III"]} membri. ({round(year_results["AN III"] * 100 / len(members), 2)}% din total.)
-    **Alumni:** {year_results["AN IV"]} membri. ({round(year_results["AN IV"] * 100 / len(members), 2)}% din total.)
+**AN I  :** {year_results["AN I"]} membri. ({round(year_results["AN I"] * 100 / len(members), 2)}% din total.)
+**AN II :** {year_results["AN II"]} membri. ({round(year_results["AN II"] * 100 / len(members), 2)}% din total.)
+**AN III:** {year_results["AN III"]} membri. ({round(year_results["AN III"] * 100 / len(members), 2)}% din total.)
+**Alumni:** {year_results["AN IV"]} membri. ({round(year_results["AN IV"] * 100 / len(members), 2)}% din total.)
         """
 
     role_values = \
         f"""
-    **CIBERNETICĂ:** {role_results["CIBERNETICĂ"]} membri. ({round(role_results["CIBERNETICĂ"] * 100 / len(members), 2)}% din total.)
-    **INFORMATICĂ:** {role_results["INFORMATICĂ ECONOMICĂ"]} membri. ({round(role_results["INFORMATICĂ ECONOMICĂ"] * 100 / len(members), 2)}% din total.)
-    **STATISTICĂ :** {role_results["STATISTICĂ"]} membri. ({round(role_results["STATISTICĂ"] * 100 / len(members), 2)}% din total.)
-    **VIZITATORI :** {role_results["VIZITATOR"]} membri. ({round(role_results["VIZITATOR"] * 100 / len(members), 2)}% din total.) 
+**CIBERNETICĂ:** {role_results["CIBERNETICĂ"]} membri. ({round(role_results["CIBERNETICĂ"] * 100 / len(members), 2)}% din total.)
+**INFORMATICĂ:** {role_results["INFORMATICĂ ECONOMICĂ"]} membri. ({round(role_results["INFORMATICĂ ECONOMICĂ"] * 100 / len(members), 2)}% din total.)
+**STATISTICĂ :** {role_results["STATISTICĂ"]} membri. ({round(role_results["STATISTICĂ"] * 100 / len(members), 2)}% din total.)
+**VIZITATORI :** {role_results["VIZITATOR"]} membri. ({round(role_results["VIZITATOR"] * 100 / len(members), 2)}% din total.) 
         """
 
     result = discord.Embed(color=0xff0000)
@@ -162,16 +163,41 @@ async def update(ctx):
         for key, value in temp.items():
             if value == 1:
                 good_role = key
-        member_roles = [role.name for role in member.roles]
-        for role in member_roles:
-            if role in ("AN I", "AN II", "AN III") and role != good_role:
-                await member.remove_roles(role, reason="Rol asignat incorect.")
-                await member.add_roles(good_role)
+        year_roles = [role.name for role in member.roles if role.name in ["AN I", "AN II", "AN III"]]
+        if len(year_roles) < 1:
+            await member.add_roles(discord.utils.get(ctx.guild.roles, name=good_role))
+            year_roles.append(good_role)
+        for role in year_roles:
+            if role != good_role:
+                await member.remove_roles(discord.utils.get(ctx.guild.roles, name=role))
+                await member.add_roles(discord.utils.get(ctx.guild.roles, name=good_role))
+
     end = datetime.datetime.now()
     elapsed = end - start
     embed = discord.Embed(color=0x00ff00)
     embed.set_footer(text=f"Procedura de update a membrilor a durat {round(elapsed.seconds, 2)} de secunde.")
-    await ctx.send(embed=embed, delete_after=30)
+    await ctx.send(embed=embed)
+
+
+@bot.command()  # About the Bot
+async def ver(ctx):
+    embed = discord.Embed(color=0x000000)
+    embed.set_author(name="About this Bot:")
+    about_info_1 = \
+        f"""
+    
+        """
+    about_info_2 = \
+        f"""
+중간끝 ( B O T ) is a fully-integrated Discord Bot, made using the following technology stack:
+    - Python 3.8
+    - Pycharm & Visual Studio IDEs
+    - 
+        """
+    embed.add_field(name="Bot Status:", value=about_info_1, inline=False)
+    embed.add_field(name="Bot Description:", value=about_info_2, inline=False)
+    embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
+    await ctx.send(embed=embed)
 
 
 @bot.event
@@ -180,12 +206,19 @@ async def on_ready():
 
 
 @bot.event
+async def on_member_join(member):
+    await member.create_dm()
+    await member.dm_channel.send(f"Bună {member.name}...")
+    await member.dm_channel.send(dm_message)
+
+
+@bot.event
 async def on_message(ctx):
     if ctx.author == bot.user:
         return
 
     # Whois Inspection Tool:
-    if ctx.content.startswith('whois') and (ctx.mentions.__len__() > 0):
+    if ctx.content.lower().startswith('whois') and (ctx.mentions.__len__() > 0):
         for user in ctx.mentions:
             whois = discord.Embed(colour=0xff0000)
             whois.set_author(name=f" whois performed ~ {user}", icon_url=user.avatar_url)
@@ -203,6 +236,12 @@ async def on_message(ctx):
             whois.add_field(name="Cel mai mare rol: ", value=user.top_role.mention, inline=False)
             whois.set_footer(text=f'whois rulat de @{ctx.author}\nWHOIS tool creat de către Olariu Alexandru-Răzvan.')
             await ctx.channel.send(embed=whois)
+
+    # Avatar Inspection Tool:
+    if ctx.content.lower().startswith('avatar') and (ctx.mentions.__len__() > 0):
+        for user in ctx.mentions:
+            link = user.avatar_url
+            await ctx.channel.send(link)
 
     # Allow the bot to process commands:
     await bot.process_commands(ctx)
