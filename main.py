@@ -1,3 +1,6 @@
+import os
+import platform
+
 import datetime
 import logging
 
@@ -5,8 +8,8 @@ import discord
 from discord.utils import get
 from discord.ext import commands
 
-from config import *
-
+# Flask script to run a server thread.
+#from keep_alive import keep_alive
 
 # Helper Functions:
 
@@ -31,9 +34,9 @@ def server_years(members):
             join_month = int(join_date[5:7])
             if join_year == current_year and join_month >= 6:
                 y1 += 1
-            elif join_year == (current_year - 1) or (join_year == current_year and join_month < 6):
+            elif join_year == current_year - 1 or (join_year == current_year and join_month < 6):
                 y2 += 1
-            elif join_year == (current_year - 2):
+            elif join_year == current_year - 2:
                 y3 += 1
             else:
                 y4 += 1
@@ -43,9 +46,9 @@ def server_years(members):
         join_month = int(join_date[5:7])
         if join_year == current_year and join_month >= 6:
             y1 += 1
-        elif join_year == (current_year - 1) or (join_year == current_year and join_month < 6):
+        elif join_year == current_year - 1 or (join_year == current_year and join_month < 6):
             y2 += 1
-        elif join_year == (current_year - 2):
+        elif join_year == current_year - 2:
             y3 += 1
         else:
             y4 += 1
@@ -54,7 +57,7 @@ def server_years(members):
         "AN I": y1,
         "AN II": y2,
         "AN III": y3,
-        "AN IV": y4
+        "AN IV+": y4
     }
     return result
 
@@ -132,7 +135,7 @@ async def server(ctx):
 **AN I  :** {year_results["AN I"]} membri. ({round(year_results["AN I"] * 100 / len(members), 2)}% din total.)
 **AN II :** {year_results["AN II"]} membri. ({round(year_results["AN II"] * 100 / len(members), 2)}% din total.)
 **AN III:** {year_results["AN III"]} membri. ({round(year_results["AN III"] * 100 / len(members), 2)}% din total.)
-**Alumni:** {year_results["AN IV"]} membri. ({round(year_results["AN IV"] * 100 / len(members), 2)}% din total.)
+**Alumni:** {year_results["AN IV+"]} membri. ({round(year_results["AN IV+"] * 100 / len(members), 2)}% din total.)
         """
 
     role_values = \
@@ -153,30 +156,38 @@ async def server(ctx):
 
 @bot.command()  # Update Hierarchy
 async def update(ctx):
-    print("Started now.")
     start = datetime.datetime.now()
     guild = await bot.fetch_guild(606206204699738135)
     members = await guild.fetch_members(limit=None).flatten()
+    _val1 = get(ctx.guild.roles, name="AN I")
+    _val2 = get(ctx.guild.roles, name="AN II")
+    _val3 = get(ctx.guild.roles, name="AN III")
+    _val4 = get(ctx.guild.roles, name="AN IV+")
+    role_dex = \
+        {
+            "AN I": _val1,
+            "AN II": _val2,
+            "AN III": _val3,
+            "AN IV+": _val4
+        }
     for member in members:
-        print(f"Processing Member #{member.name}")
         temp = server_years(member)
         for key, value in temp.items():
             if value == 1:
-                good_role = key
-        year_roles = [role.name for role in member.roles if role.name in ["AN I", "AN II", "AN III"]]
-        if len(year_roles) < 1:
-            await member.add_roles(discord.utils.get(ctx.guild.roles, name=good_role))
-            year_roles.append(good_role)
-        for role in year_roles:
-            if role != good_role:
-                await member.remove_roles(discord.utils.get(ctx.guild.roles, name=role))
-                await member.add_roles(discord.utils.get(ctx.guild.roles, name=good_role))
-
+                good_role = role_dex[key]
+        member_roles = [role for role in member.roles if role.name in ["AN I", "AN II", "AN III", "AN IV+"]]
+        if len(member_roles) == 0:
+            await member.add_roles(good_role, reason="Adaugare rol.")
+        else:
+            for role in member_roles:
+                if role.name != good_role.name:
+                    await member.remove_roles(role, reason="Rol asignat incorect.")
+                    await member.add_roles(good_role, reason="Corectare rol.")
     end = datetime.datetime.now()
     elapsed = end - start
     embed = discord.Embed(color=0x00ff00)
     embed.set_footer(text=f"Procedura de update a membrilor a durat {round(elapsed.seconds, 2)} de secunde.")
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed, delete_after=180)
 
 
 @bot.command()  # About the Bot
@@ -185,20 +196,49 @@ async def ver(ctx):
     embed.set_author(name="About this Bot:")
     about_info_1 = \
         f"""
-    
+**Bot Developer:** <@276709808512696320> (중간끝#6826)
+**UID:** 613154066662555648
+**Latency:** {round(bot.latency * 1000, 2)}ms
+**Current Working Directory:** {os.getcwd()}
+**Operating Platform:** {platform.platform(aliased=True)}
+**Compiler being used:** {platform.python_compiler()}
+**Operating System:** {platform.system()}
+**OS version:** {platform.version()}
+**CPU type:** {platform.processor()}
+**CPU cores:** {os.cpu_count()} cores
         """
     about_info_2 = \
         f"""
-중간끝 ( B O T ) is a fully-integrated Discord Bot, made using the following technology stack:
-    - Python 3.8
-    - Pycharm & Visual Studio IDEs
-    - 
-        """
+중간끝 ( B O T ) este momentan la versiunea **2.00b.**
+
+Acest robot a fost conceput pentru a servi studentii de pe serverul de discord CSIE++.
+Serverul CSIE++ reprezinta comunitatea studentilor din facultatea de Cibernetica, Statistica si Informatica Economica.
+Robotul este complet integrat cu capabilitatile servereului si ofera studentilor o gama variata de resurse.
+
+
+**În această versiune:**
+    ```diff
+    ++ Am simplificat procesul de asignare automata a anului.
+    ++ Am actualizat bibliotecile interne ale botului la ultima versiune.
+    ++ Am incorporat biblioteci de encoding si decoding pentru fisiere JSON.
+    -- Botul momentan este instabil.
+    ```
+"""
     embed.add_field(name="Bot Status:", value=about_info_1, inline=False)
     embed.add_field(name="Bot Description:", value=about_info_2, inline=False)
     embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
     await ctx.send(embed=embed)
 
+
+@bot.command()
+async def test(ctx):
+  embed = discord.Embed(color=0x00ff00)
+  embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
+  embed.set_thumbnail(url = ctx.author.avatar_url)
+  embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
+  embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
+  embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
+  await ctx.send(embed=embed)
 
 @bot.event
 async def on_ready():
@@ -207,9 +247,15 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    await member.create_dm()
-    await member.dm_channel.send(f"Bună {member.name}...")
-    await member.dm_channel.send(dm_message)
+  await member.create_dm()
+  await member.dm_channel.send(f"Bună {member.name}...")
+  embed = discord.Embed(color=0x00ff00)
+  embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
+  embed.set_thumbnail(url = member.avatar_url)
+  embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
+  embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
+  embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
+  await member.dm_channel.send(embed=embed)
 
 
 @bot.event
@@ -246,5 +292,5 @@ async def on_message(ctx):
     # Allow the bot to process commands:
     await bot.process_commands(ctx)
 
-
-bot.run(TOKEN)
+#keep_alive()
+bot.run(os.getenv('TOKEN'))
