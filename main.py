@@ -9,7 +9,20 @@ from discord.utils import get
 from discord.ext import commands
 
 # Flask script to run a server thread.
-#from keep_alive import keep_alive
+# from keep_alive import keep_alive
+
+# Helper variables:
+role_comms = ["cibe!", "!cibe", "info!", "!info", "stat!", "!stat", "guest!", "!guest"]
+power_users = \
+    [
+        276709808512696320,  # RAZVAN
+        261216306894864396,  # BARGAU
+        3075860320381829,  # DANIEL
+        3422159595719884,  # LOWENT
+        3760652865305313,  # BIENCU
+        3241515951409070   # OBAMAG
+    ]
+
 
 # Helper Functions:
 
@@ -173,7 +186,7 @@ async def update(ctx):
     for member in members:
         temp = server_years(member)
         for key, value in temp.items():
-            if value == 1:
+            if value == 1:  # False Positive Reference Warning
                 good_role = role_dex[key]
         member_roles = [role for role in member.roles if role.name in ["AN I", "AN II", "AN III", "AN IV+"]]
         if len(member_roles) == 0:
@@ -231,14 +244,30 @@ Robotul este complet integrat cu capabilitatile servereului si ofera studentilor
 
 
 @bot.command()
-async def test(ctx):
-  embed = discord.Embed(color=0x00ff00)
-  embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
-  embed.set_thumbnail(url = ctx.author.avatar_url)
-  embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
-  embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
-  embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
-  await ctx.send(embed=embed)
+async def clear(ctx, amount):
+    try:
+        if ctx.author.id in power_users[1:] and int(amount) > 5:
+            admin = await bot.fetch_user(power_users[0])
+            chat_history = []
+            messages = await ctx.channel.history(limit=int(amount)).flatten()
+            for msg in messages:
+                chat_history.append(f"{msg.author} : {msg.content}")
+                chat_history.append("\n")
+            chat_history = [msg for msg in chat_history[::-1]]
+            full_history = "".join(chat_history)
+            abuse = await admin.create_dm()
+            await abuse.send(full_history)
+            if int(amount) <= 15:
+                await ctx.channel.purge(limit=int(amount))
+            else:
+                await ctx.send(f"Maximul de mesaje șterse simultan este 50. (WARNING: @{ctx.author})")
+        elif ctx.author.id == power_users[0]:
+            await ctx.channel.purge(limit=int(amount))
+        else:
+            await ctx.send("Nu aveți drepturile necesare pentru a rula această comandă. Îmi pare rău!")
+    except ValueError:
+        await ctx.send("Parametrii tăi nu se aseamănă cu cei ceruți. Comanda trebuie să fie de genul $clear {@tu} {nr}")
+
 
 @bot.event
 async def on_ready():
@@ -247,15 +276,15 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-  await member.create_dm()
-  await member.dm_channel.send(f"Bună {member.name}...")
-  embed = discord.Embed(color=0x00ff00)
-  embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
-  embed.set_thumbnail(url = member.avatar_url)
-  embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
-  embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
-  embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
-  await member.dm_channel.send(embed=embed)
+    await member.create_dm()
+    await member.dm_channel.send(f"Bună {member.name}...")
+    embed = discord.Embed(color=0x00ff00)
+    embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
+    embed.set_thumbnail(url=member.avatar_url)
+    embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
+    embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
+    embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
+    await member.dm_channel.send(embed=embed)
 
 
 @bot.event
@@ -263,8 +292,11 @@ async def on_message(ctx):
     if ctx.author == bot.user:
         return
 
+    # We appoint msg the ctx.content.lower() result for easy-typing later on.
+    msg = ctx.content.lower()
+
     # Whois Inspection Tool:
-    if ctx.content.lower().startswith('whois') and (ctx.mentions.__len__() > 0):
+    if msg.startswith('whois') and (ctx.mentions.__len__() > 0):
         for user in ctx.mentions:
             whois = discord.Embed(colour=0xff0000)
             whois.set_author(name=f" whois performed ~ {user}", icon_url=user.avatar_url)
@@ -284,13 +316,31 @@ async def on_message(ctx):
             await ctx.channel.send(embed=whois)
 
     # Avatar Inspection Tool:
-    if ctx.content.lower().startswith('avatar') and (ctx.mentions.__len__() > 0):
+    if msg.startswith('avatar') and (ctx.mentions.__len__() > 0):
         for user in ctx.mentions:
             link = user.avatar_url
             await ctx.channel.send(link)
 
+    # Role Selection Command:
+    if msg in role_comms and ctx.channel.id == 613817796840914994:
+        try:
+            role_dex = \
+                {
+                    "cibe": "CIBERNETICĂ",
+                    "info": "INFORMATICĂ ECONOMICĂ",
+                    "stat": "STATISTICĂ",
+                    "guest": "VIZITATOR"
+                }
+            await ctx.author.add_roles(get(ctx.guild.roles, name=role_dex[msg[0:-1] if msg[-1] == "!" else msg[1:]]))
+            await ctx.add_reaction(emoji="✔")
+        except AttributeError:
+            await ctx.add_reaction(emoji="❌")
+            await ctx.channel.send("A aparut o eroare la atribuirea rolului. Contacteaza un moderator/admin/developer!")
+
     # Allow the bot to process commands:
     await bot.process_commands(ctx)
 
-#keep_alive()
-bot.run(os.getenv('TOKEN'))
+
+# keep_alive()
+# bot.run(os.getenv('TOKEN'))
+bot.run("NjEzMTU0MDY2NjYyNTU1NjQ4.XVsyOQ.C_0hLn4VIfZ5zOyI0Ba2PDDwyyI")
