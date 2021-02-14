@@ -343,4 +343,3 @@ async def on_message(ctx):
 
 # keep_alive()
 # bot.run(os.getenv('TOKEN'))
-bot.run("NjEzMTU0MDY2NjYyNTU1NjQ4.XVsyOQ.C_0hLn4VIfZ5zOyI0Ba2PDDwyyI")
