@@ -8,6 +8,7 @@ from discord.utils import get
 from discord_utils import *
 
 
+# To use: whois {member_tag}
 class Whois(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -37,6 +38,7 @@ class Whois(commands.Cog):
                 await ctx.channel.send(embed=whois)
 
 
+# To use: avatar {member_tag}
 class Avatar(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -52,6 +54,7 @@ class Avatar(commands.Cog):
                 await ctx.channel.send(link)
 
 
+# To use: type "cibe!" / "info!" / "stat!" / "guest!" in a *SPECIFIC* channel.
 class RoleAssign(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -77,6 +80,7 @@ class RoleAssign(commands.Cog):
                 await ctx.channel.send("A aparut o eroare la atribuirea rolului. Contacteaza un moderator/admin/developer!")
 
 
+# To use: type a *SPECIFIC* phrase at the end of your message in a channel.
 class PollReactions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -95,6 +99,7 @@ class PollReactions(commands.Cog):
                 await ctx.send("Sigur ai vrut sa faci un poll? Nu recunosc comanda rapida.")
 
 
+# To use: $server in a channel.
 class ServerInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -129,6 +134,7 @@ class ServerInfo(commands.Cog):
         await ctx.send(embed=result)
 
 
+# To use: $update in a channel.
 class UpdateMembers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -173,6 +179,7 @@ class UpdateMembers(commands.Cog):
         await ctx.send(embed=embed, delete_after=180)
 
 
+# To use: $ver in a channel.
 class BotVersion(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -217,6 +224,7 @@ class BotVersion(commands.Cog):
         await ctx.send(embed=embed)
 
 
+# To use: $clear {amount_of_messages_to_be_deleted} in a channel.
 class ClearMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -247,6 +255,7 @@ class ClearMessages(commands.Cog):
             await ctx.send("Parametrii tăi nu se aseamănă cu cei ceruți. Comanda trebuie să fie de genul $clear {@tu} {nr}")
 
 
+# To use: react to a *SPECIFIC* message in a *SPECIFIC* channel.
 class CustomRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -316,6 +325,7 @@ class CustomRoles(commands.Cog):
                     print(e)
 
 
+# To use: automatically when a new member joins the server.
 class MemberJoin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
