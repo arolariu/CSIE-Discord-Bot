@@ -1,61 +1,124 @@
 import os
 import platform
 
-
-import discord
 from discord.ext import commands
 from discord.utils import get
 from discord_utils import *
 
 
-# To use: whois {member_tag}
-class Whois(commands.Cog):
+############################################################
+# On Classes (specific classes that trigger on "on" events):
+############################################################
+
+
+# To use: react to a *SPECIFIC* message in a *SPECIFIC* channel.
+class OnRawReactionAdd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author == self.bot.user:
-            return
-        msg = ctx.content.lower()
-        if msg.startswith('whois') and (ctx.mentions.__len__() > 0):
-            for user in ctx.mentions:
-                whois = discord.Embed(colour=0xff0000)
-                whois.set_author(name=f" whois performed ~ {user}", icon_url=user.avatar_url)
-                whois.set_thumbnail(url=user.avatar_url)
-                whois.add_field(name="Nume de utilizator: ", value=user.name, inline=True)
-                whois.add_field(name="User ID: ", value=user.id, inline=True)
-                whois.add_field(name="Poreclă: ", value=user.nick, inline=False)
-                whois.add_field(name="Activitate: ", value=user.activity, inline=True)
-                whois.add_field(name="Status: ", value=user.status, inline=True)
-                whois.add_field(name="Conectat la voce: ", value="DA" if user.voice is True else "NU", inline=False)
-                whois.add_field(name="S-a alăturat pe server în data de: ",
-                                value=user.joined_at.strftime("%A, %#d %B %Y, %H:%M"), inline=False)
-                whois.add_field(name="S-a alăturat pe discord în data de: ",
-                                value=user.created_at.strftime("%A, %#d %B %Y, %H:%M"), inline=False)
-                whois.add_field(name="Cel mai mare rol: ", value=user.top_role.mention, inline=False)
-                whois.set_footer(text=f'whois rulat de @{ctx.author}\nWHOIS tool creat de către Olariu Alexandru-Răzvan.')
-                await ctx.channel.send(embed=whois)
+    async def on_raw_reaction_add(self, payload):
+        guild = await self.bot.fetch_guild(606206204699738135)
+        channel = self.bot.get_channel(744513142188670977)
+        msg = await channel.fetch_message(id=744562841276645457)
+        reaction_dex = \
+            {
+                "1️⃣": 1,
+                "2️⃣": 2,
+                "3️⃣": 3,
+                "4️⃣": 4,
+                "5️⃣": 5
+            }
+        embed = msg.embeds
+        embed_desc = embed[0].description
+        role_page = [embed_desc.count(f"Pagina {i}/6") for i in range(1, 7)]
+        start_page = role_page.index(1)
+        await msg.edit(embed=role_pages[start_page])
+
+        if payload.message_id == 744562841276645457:
+
+            # The user has hit the back page reaction:
+            if payload.emoji.name == "👈":
+                try:
+                    if (start_page - 1) > 0:
+                        start_page -= 1
+                    else:
+                        start_page = 5
+                    await msg.edit(embed=role_pages[start_page])
+                except Exception as e:
+                    print(e)
+                await msg.remove_reaction(member=payload.member, emoji="👈")
+
+            # The user has hit the next page reaction:
+            elif payload.emoji.name == "👉":
+                try:
+                    if (start_page + 1) > 5:
+                        start_page = 0
+                    else:
+                        start_page += 1
+                    await msg.edit(embed=role_pages[start_page])
+                except Exception as e:
+                    print(e)
+                await msg.remove_reaction(member=payload.member, emoji="👉")
+
+            # The user has hit a role reaction.
+            else:
+                try:
+                    role_dex = \
+                        {
+                            1: ["Ofițer", "Drogat", "Scîrțar", "Weeb", "Chad"],
+                            2: ["Bercenar", "Covid-20", "Nașul", "Gay", "Sărac"],
+                            3: ["DJ", "Party", "Memer", "LOL-ist", "CSGO-ist"],
+                            4: ["C/C++", "C#", "Python", "Java", "JavaScript"],
+                            5: ["Data Scientist", "Software Developer", "Graphics Industry", "Web Developer",
+                                "Game Industry"],
+                            6: ["SiSC Member", "MLSA Member", "VIP Member", None, None]
+                        }
+                    custom_role = discord.utils.get(guild.roles,
+                                                    name=role_dex[start_page + 1][reaction_dex[payload.emoji.name] - 1])
+                    await payload.member.add_roles(custom_role)
+                    await msg.remove_reaction(member=payload.member, emoji=payload.emoji.name)
+                except Exception as e:
+                    print(e)
 
 
-# To use: avatar {member_tag}
-class Avatar(commands.Cog):
+# To use: automatically when a new member joins the server.
+class OnMemberJoin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author == self.bot.user:
-            return
-        msg = ctx.content.lower()
-        if msg.startswith('avatar') and (ctx.mentions.__len__() > 0):
-            for user in ctx.mentions:
-                link = user.avatar_url
-                await ctx.channel.send(link)
+    async def on_member_join(self, member):
+        try:
+            await member.create_dm()
+            await member.dm_channel.send(f"Bună {member.name}...")
+            embed = discord.Embed(color=0x00ff00)
+            embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
+            embed.set_thumbnail(url=member.avatar_url)
+            embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
+            embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
+            embed.set_image(url=LOGO_GIF)
+            await member.dm_channel.send(embed=embed)
+        except Exception as e:
+            channel = self.bot.get_channel(773242027101913098)  # discutie-1 channel
+            await channel.send(f"Nu am putut sa iti scriu un mesaj in privat, {member.name}, e totul in regula?")
+        channel = self.bot.get_channel(703014828733628446)  # bun-venit channel
+        await channel.send(f"Bun venit pe canalul de discord, {member.name}!")
+
+
+# To use: automatically when the bot is ready to perform his tasks.
+class OnReady(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        channel = self.bot.get_channel(744632571471855807)
+        await channel.send("Am primit restart.")
 
 
 # To use: type "cibe!" / "info!" / "stat!" / "guest!" in a *SPECIFIC* channel.
-class RoleAssign(commands.Cog):
+class OnMessage(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -73,30 +136,18 @@ class RoleAssign(commands.Cog):
                         "stat": "STATISTICĂ",
                         "guest": "VIZITATOR"
                     }
-                await ctx.author.add_roles(get(ctx.guild.roles, name=role_dex[msg[0:-1] if msg[-1] == "!" else msg[1:]]))
+                await ctx.author.add_roles(
+                    get(ctx.guild.roles, name=role_dex[msg[0:-1] if msg[-1] == "!" else msg[1:]]))
                 await ctx.add_reaction(emoji="✔")
             except AttributeError:
                 await ctx.add_reaction(emoji="❌")
-                await ctx.channel.send("A aparut o eroare la atribuirea rolului. Contacteaza un moderator/admin/developer!")
+                await ctx.channel.send(
+                    "A aparut o eroare la atribuirea rolului. Contacteaza un moderator/admin/developer!")
 
 
-# To use: type a *SPECIFIC* phrase at the end of your message in a channel.
-class PollReactions(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author == self.bot.user:
-            return
-        msg = ctx.content.lower()
-        if msg.split()[-1] in reactions.keys():
-            try:
-                reactions_count = msg.split()[-1].count("/")
-                for reaction in range(0, reactions_count + 1, 1):
-                    await ctx.add_reaction(emoji=reactions[msg.split()[-1]][reaction])
-            except AttributeError:
-                await ctx.send("Sigur ai vrut sa faci un poll? Nu recunosc comanda rapida.")
+##################################################
+# Special Commands Classes (called with $ prefix):
+##################################################
 
 
 # To use: $server in a channel.
@@ -203,7 +254,7 @@ class BotVersion(commands.Cog):
             """
         about_info_2 = \
             f"""
-    중간끝 ( B O T ) este momentan la versiunea **2.1a.**
+    중간끝 ( B O T ) este momentan la versiunea **{VERSION_NUMBER}**
     
     Acest robot a fost conceput pentru a servi studentii de pe serverul de discord CSIE++.
     Serverul CSIE++ reprezinta comunitatea studentilor din facultatea de Cibernetica, Statistica si Informatica Economica.
@@ -211,16 +262,13 @@ class BotVersion(commands.Cog):
     
     
     **În această versiune:**
-        ```diff
-        ++ Am simplificat procesul de asignare automata a anului.
-        ++ Am actualizat bibliotecile interne ale botului la ultima versiune.
-        ++ Am incorporat biblioteci de encoding si decoding pentru fisiere JSON.
-        -- Botul momentan este instabil.
+        ```
+{VERSION_DATA}
         ```
     """
         embed.add_field(name="Bot Status:", value=about_info_1, inline=False)
         embed.add_field(name="Bot Description:", value=about_info_2, inline=False)
-        embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
+        embed.set_image(url=LOGO_GIF)
         await ctx.send(embed=embed)
 
 
@@ -228,6 +276,7 @@ class BotVersion(commands.Cog):
 class ClearMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
 
     @commands.command()
     async def clear(self, ctx, amount):
@@ -252,94 +301,95 @@ class ClearMessages(commands.Cog):
             else:
                 await ctx.send("Nu aveți drepturile necesare pentru a rula această comandă. Îmi pare rău!")
         except ValueError:
-            await ctx.send("Parametrii tăi nu se aseamănă cu cei ceruți. Comanda trebuie să fie de genul $clear {@tu} {nr}")
+            await ctx.send(
+                "Parametrii tăi nu se aseamănă cu cei ceruți. Comanda trebuie să fie de genul $clear {@tu} {nr}")
 
 
-# To use: react to a *SPECIFIC* message in a *SPECIFIC* channel.
-class CustomRoles(commands.Cog):
+#######################################################
+# General Use Commands Classes (called with no prefix):
+#######################################################
+
+
+# To use: whois {member_tag}
+class Whois(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
-        guild = await self.bot.fetch_guild(606206204699738135)
-        channel = self.bot.get_channel(744513142188670977)
-        msg = await channel.fetch_message(id=744562841276645457)
-        reaction_dex = \
-        {
-            "1️⃣": 1,
-            "2️⃣": 2,
-            "3️⃣": 3,
-            "4️⃣": 4,
-            "5️⃣": 5
-        }
-        embed = msg.embeds
-        embed_desc = embed[0].description
-        role_page = [embed_desc.count(f"Pagina {i}/6") for i in range(1, 7)]
-        start_page = role_page.index(1)
-        await msg.edit(embed=role_pages[start_page])
-
-        if payload.message_id == 744562841276645457:
-
-            # The user has hit the back page reaction:
-            if payload.emoji.name == "👈":
-                try:
-                    if (start_page - 1) > 0:
-                        start_page -= 1
-                    else:
-                        start_page = 5
-                    await msg.edit(embed=role_pages[start_page])
-                except Exception as e:
-                    print(e)
-                await msg.remove_reaction(member=payload.member, emoji="👈")
-
-            # The user has hit the next page reaction:
-            elif payload.emoji.name == "👉":
-                try:
-                    if (start_page + 1) > 5:
-                        start_page = 0
-                    else:
-                        start_page += 1
-                    await msg.edit(embed=role_pages[start_page])
-                except Exception as e:
-                    print(e)
-                await msg.remove_reaction(member=payload.member, emoji="👉")
-
-            # The user has hit a role reaction.
-            else:
-                try:
-                    role_dex = \
-                        {
-                            1: ["Ofițer", "Drogat", "Scîrțar", "Weeb", "Chad"],
-                            2: ["Bercenar", "Covid-20", "Nașul", "Gay", "Sărac"],
-                            3: ["DJ", "Party", "Memer", "LOL-ist", "CSGO-ist"],
-                            4: ["C/C++", "C#", "Python", "Java", "JavaScript"],
-                            5: ["Data Scientist", "Software Developer", "Graphics Industry", "Web Developer",
-                                "Game Industry"],
-                            6: ["SiSC Member", "MLSA Member", "VIP Member", None, None]
-                        }
-                    custom_role = discord.utils.get(guild.roles, name=role_dex[start_page + 1][reaction_dex[payload.emoji.name] - 1])
-                    await payload.member.add_roles(custom_role)
-                    await msg.remove_reaction(member=payload.member, emoji=payload.emoji.name)
-                except Exception as e:
-                    print(e)
+    async def on_message(self, ctx):
+        if ctx.author == self.bot.user:
+            return
+        msg = ctx.content.lower()
+        if msg.startswith('whois') and (ctx.mentions.__len__() > 0):
+            for user in ctx.mentions:
+                whois = discord.Embed(colour=0xff0000)
+                whois.set_author(name=f" whois performed ~ {user}", icon_url=user.avatar_url)
+                whois.set_thumbnail(url=user.avatar_url)
+                whois.add_field(name="Nume de utilizator: ", value=user.name, inline=True)
+                whois.add_field(name="User ID: ", value=user.id, inline=True)
+                whois.add_field(name="Poreclă: ", value=user.nick, inline=False)
+                whois.add_field(name="Activitate: ", value=user.activity, inline=True)
+                whois.add_field(name="Status: ", value=user.status, inline=True)
+                whois.add_field(name="Conectat la voce: ", value="DA" if user.voice is True else "NU", inline=False)
+                whois.add_field(name="S-a alăturat pe server în data de: ",
+                                value=user.joined_at.strftime("%A, %#d %B %Y, %H:%M"), inline=False)
+                whois.add_field(name="S-a alăturat pe discord în data de: ",
+                                value=user.created_at.strftime("%A, %#d %B %Y, %H:%M"), inline=False)
+                whois.add_field(name="Cel mai mare rol: ", value=user.top_role.mention, inline=False)
+                whois.set_footer(
+                    text=f'whois rulat de @{ctx.author}\nWHOIS tool creat de către Olariu Alexandru-Răzvan.')
+                await ctx.channel.send(embed=whois)
 
 
-# To use: automatically when a new member joins the server.
-class MemberJoin(commands.Cog):
+# To use: avatar {member_tag}
+class Avatar(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
-        await member.create_dm()
-        await member.dm_channel.send(f"Bună {member.name}...")
-        embed = discord.Embed(color=0x00ff00)
-        embed.set_author(name="Bun venit pe Serverul de discord CSIE++ !!")
-        embed.set_thumbnail(url=member.avatar_url)
-        embed.add_field(name="Pentru inceput:", value=f"{os.getenv('DM_MESSAGE1')}", inline=False)
-        embed.add_field(name="In concluzie:", value=f"{os.getenv('DM_MESSAGE2')}", inline=False)
-        embed.set_image(url="https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif")
-        await member.dm_channel.send(embed=embed)
+    async def on_message(self, ctx):
+        if ctx.author == self.bot.user:
+            return
+        msg = ctx.content.lower()
+        if msg.startswith('avatar') and (ctx.mentions.__len__() > 0):
+            for user in ctx.mentions:
+                link = user.avatar_url
+                await ctx.channel.send(link)
 
 
+# To use: type a *SPECIFIC* phrase at the end of your message in a channel.
+class PollReactions(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author == self.bot.user:
+            return
+        msg = ctx.content.lower()
+        if msg.split()[-1] in reactions.keys():
+            try:
+                reactions_count = msg.split()[-1].count("/")
+                for reaction in range(0, reactions_count + 1, 1):
+                    await ctx.add_reaction(emoji=reactions[msg.split()[-1]][reaction])
+            except AttributeError:
+                await ctx.send("Sigur ai vrut sa faci un poll? Nu recunosc comanda rapida.")
+
+
+class HelpCommand(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author == self.bot.user:
+            return
+        msg = ctx.content.lower()
+        if msg.startswith("help"):
+            embed = discord.Embed(color=0xabcdef)
+            embed.set_author(name="TABELA DE AJUTOR pentru server CSIE++")
+            embed.set_image(url=LOGO_GIF)
+            for key, value in commands_list.items():
+                embed.add_field(name=key, value=value, inline=False)
+            embed.set_footer(text="Vă mulțumim pentru că faceți parte din această comunitate minunată!")
+            await ctx.channel.send(embed=embed)

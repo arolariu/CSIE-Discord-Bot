@@ -1,4 +1,3 @@
-import os
 import logging
 
 import discord
@@ -27,11 +26,6 @@ bot = commands.Bot(command_prefix='$',
                    intents=intents)
 
 
-@bot.event
-async def on_ready():
-    print("I'm ready to fight!")
-
-
 @bot.event  # When a user types in a message on the Discord Server.
 async def on_message(ctx):
     if ctx.author == bot.user:
@@ -40,18 +34,25 @@ async def on_message(ctx):
     # Allow the bot to process commands:
     await bot.process_commands(ctx)
 
+# Add "ON" Cogs:
+bot.add_cog(cogs.OnReady(bot))
+bot.add_cog(cogs.OnMessage(bot))
+bot.add_cog(cogs.OnMemberJoin(bot))
+bot.add_cog(cogs.OnRawReactionAdd(bot))
 
-keep_alive()
-bot.run(os.getenv('TOKEN'))
-
-# Whois Cog
-bot.add_cog(cogs.Whois(bot))
-bot.add_cog(cogs.Avatar(bot))
-bot.add_cog(cogs.RoleAssign(bot))
-bot.add_cog(cogs.PollReactions(bot))
-bot.add_cog(cogs.ServerInfo(bot))
+# Add Special Commands Cogs:
 bot.add_cog(cogs.UpdateMembers(bot))
-bot.add_cog(cogs.BotVersion(bot))
 bot.add_cog(cogs.ClearMessages(bot))
-bot.add_cog(cogs.CustomRoles(bot))
-bot.add_cog(cogs.MemberJoin(bot))
+bot.add_cog(cogs.BotVersion(bot))
+bot.add_cog(cogs.ServerInfo(bot))
+
+# Add General Use Commands Cogs:
+bot.add_cog(cogs.Avatar(bot))
+bot.add_cog(cogs.Whois(bot))
+bot.add_cog(cogs.PollReactions(bot))
+bot.add_cog(cogs.HelpCommand(bot))
+
+
+#keep_alive()
+#bot.run(os.getenv('TOKEN'))
+
