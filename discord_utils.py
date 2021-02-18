@@ -7,20 +7,19 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 # VERSION CONTROL:
 ##################
 
-VERSION_NUMBER = "2.01d"
+VERSION_DATE = "18/02/2021"
+VERSION_NUMBER = "2.1a"
 VERSION_DATA = \
     """
-        ++ Actualizat toate librariile interne la ultima versiune, botul are toate functionalitatile posibile pentru Discord.
-        ++ O restructurare majora a codului, de la versiunea 1.94 pana acum, codul a fost restructurat in proportie de 95%.
-        ++ Actualizarile se pot face on-the-fly, nu mai este nevoie ca botul sa fie coborat si apoi urcat.
-        ++ Nu mai are nevoie de mentenanta la finalul fiecarei luni, este 24/7 de acum in colo.
-        ++ Simplificat logica pentru asignarea automata a rolului de an, pentru studenti.
-        ++ Configuratia interna a botului a fost criptata pentru a spori securitatea.
-        ++ Botul are un latency mult mai mic, de 40ms, comparativ cu 150ms.
-        ++ Am adoptat o noua arhitectura pentru bot: Plugins + Modules.
-        ++ Eficienta sporita cu pana la 100% in unele categorii.
-        ++ Reparat si re-simplificat meniul de pe #roles.
-        ++ Botul utilizeaza resursele mult mai eficient.
+++ Botul are toate librariile interne actualizate la ultima versiune.
+++ Configuratia interna a fost criptata pentru a spori securitatea.
+++ Botul are un latency mult mai mic, de 40ms, comparativ cu 150ms.
+++ Simplificat logica pentru asignarea automata a rolului de an.
+++ Am adoptat o noua arhitectura pentru bot: Plugins + Modules.
+++ Actualizarile se pot face on-the-fly, simplu si eficient.
+++ Baza de cod a fost restructurata in proportie de 95%.
+++ Reparat si simplificat meniul de pe #roles.
+++ Botul este online 24/7 de acum.
     """
 
 ##############################################################################

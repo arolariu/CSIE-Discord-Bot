@@ -1,8 +1,7 @@
+import os
 import logging
 
 import discord
-import cogs
-
 from discord.ext import commands
 
 # Intents for Member logging:
@@ -26,6 +25,21 @@ bot = commands.Bot(command_prefix='$',
                    intents=intents)
 
 
+@bot.command()
+async def load(ctx, extension):
+    bot.load_extension(f'cogs.{extension}')
+
+
+@bot.command()
+async def unload(ctx, extension):
+    bot.unload_extension(f'cogs.{extension}')
+
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        bot.load_extension(f'cogs.{filename[:-3]}')
+
+
 @bot.event  # When a user types in a message on the Discord Server.
 async def on_message(ctx):
     if ctx.author == bot.user:
@@ -34,25 +48,6 @@ async def on_message(ctx):
     # Allow the bot to process commands:
     await bot.process_commands(ctx)
 
-# Add "ON" Cogs:
-bot.add_cog(cogs.OnReady(bot))
-bot.add_cog(cogs.OnMessage(bot))
-bot.add_cog(cogs.OnMemberJoin(bot))
-bot.add_cog(cogs.OnRawReactionAdd(bot))
-
-# Add Special Commands Cogs:
-bot.add_cog(cogs.UpdateMembers(bot))
-bot.add_cog(cogs.ClearMessages(bot))
-bot.add_cog(cogs.BotVersion(bot))
-bot.add_cog(cogs.ServerInfo(bot))
-
-# Add General Use Commands Cogs:
-bot.add_cog(cogs.Avatar(bot))
-bot.add_cog(cogs.Whois(bot))
-bot.add_cog(cogs.PollReactions(bot))
-bot.add_cog(cogs.HelpCommand(bot))
-
 
 #keep_alive()
 #bot.run(os.getenv('TOKEN'))
-
