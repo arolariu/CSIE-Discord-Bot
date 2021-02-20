@@ -11,13 +11,19 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
+        if ctx.author == self.bot.user:
+            return
+
         # We use a variable to store ctx.content.lower()
         msg = ctx.content.lower()
 
         # On every message, a user gets 3 credits to spend.
         with open("credits.json", "r") as js:
             data = json.load(js)
-        data[str(ctx.author.id)] += 3
+        try:
+            data[str(ctx.author.id)] += 3
+        except KeyError:  # Means the user is a Webhook
+            pass
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
 
