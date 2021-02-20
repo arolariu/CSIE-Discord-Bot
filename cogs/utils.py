@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord_utils import *
 
 
-class Utils(commands.Cog):
+class Utils(commands.Cog, name="Utile"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -122,12 +122,13 @@ class Utils(commands.Cog):
 **Compiler being used:** {platform.python_compiler()}
 **Operating System:** {platform.system()}
 **OS version:** {platform.version()}
+**CPU arhitecture:** {platform.machine()}
 **CPU type:** {platform.processor()}
 **CPU cores:** {os.cpu_count()} cores
             """
         about_info_2 = \
             f"""
-중간끝 ( B O T ) este momentan la versiunea **{VERSION_NUMBER} (Ultima actualizare: {VERSION_DATE})**
+중간끝 ( B O T ) este momentan la versiunea **{VERSION_NUMBER}** (Ultima actualizare: **{VERSION_DATE}**)
 
     **În această versiune:**
         ```

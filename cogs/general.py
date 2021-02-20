@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 # General Commands Class
-class General(commands.Cog):
+class General(commands.Cog, name="Generale"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -41,7 +41,7 @@ class General(commands.Cog):
                             value=old_user.created_at.strftime("%A, %d %B %Y, %H:%M"), inline=False)
             whois.add_field(name="Cel mai mare rol: ", value=old_user.top_role.mention, inline=False)
             whois.set_footer(
-                text=f'whois rulat de @{ctx.author}\nWHOIS tool creat de către Olariu Alexandru-Răzvan.')
+                text=f'whois rulat de @{ctx.author}\nWHOIS tool creat de către 중간끝#6826.')
             return await ctx.channel.send(embed=whois)
         else:
             return await ctx.channel.send("Ai uitat sa specifici un utilizator.")

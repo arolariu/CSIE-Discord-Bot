@@ -6,7 +6,7 @@ from asyncio import sleep
 from discord.ext import commands
 
 
-class Fun(commands.Cog):
+class Fun(commands.Cog, name="Casino"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -35,7 +35,7 @@ class Fun(commands.Cog):
                     return await ctx.channel.send("Nu poti paria. Balanta ta este 0.")
                 elif user in data.keys() and data[user] < amount:
                     return await ctx.channel.send("Nu poti paria mai mult decat ai in portofel.")
-            except Exception:
+            except ValueError:  # JSONDecodeError
                 return await ctx.channel.send("Eroare interna. Contacteaza-l pe 중간끝#6826")
 
         # We play the main game, if we have not returned yet.
@@ -132,7 +132,7 @@ SUMA CASTIGATA: {result}
 
         # If the user did not hit any winning numbers:
         else:
-            embed.color = 0xFF0000
+            embed.colour = 0xFF0000
             embed.description = f"Ai pierdut {amount} credite.."
             await msg.edit(embed=embed)
 
@@ -142,13 +142,25 @@ SUMA CASTIGATA: {result}
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
 
+    # Error Handler for the above command:
+    @ruleta.error
+    async def ruleta_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(title=f":exclamation: Deja ai pariat la ruleta, mai asteapta {error.retry_after:.2f} sec :exclamation:",
+                                  color=0xFF0000)
+            await ctx.channel.send(embed=embed, delete_after=5)
+
     # The $balance command shows users their current credit score balance.
     @commands.command(help="Arata cate credite are un utilizator.",
                       description="Poti specifica, optional, un user.\nSintaxa:")
     async def balance(self, ctx, *, user=None):
+        old_user = user  # Just to remove the potential assignment error.
         if user is not None:
-            old_user = self.bot.get_user(int(user[3:-1]))
-            user = str(user[3:-1])
+            try:
+                old_user = self.bot.get_user(int(user[3:-1]))
+                user = str(user[3:-1])
+            except ValueError:
+                return await ctx.channel.send("Sigur ai formulat bine comanda?")
 
         with open("credits.json", "r") as js:
             data = json.load(js)
@@ -169,9 +181,12 @@ SUMA CASTIGATA: {result}
     @commands.command(help="Doneaza o suma modica unui utilizator.",
                       description="Comanda $donate iti permite sa donezi credite unui alt utilizator.\nSINTAXA:")
     async def donate(self, ctx, user, amount):
-        total = int(amount)
-        old_user = user
-        user = str(user[3:-1])
+        try:
+            total = int(amount)
+            old_user = user
+            user = str(user[3:-1])
+        except ValueError:
+            return await ctx.channel.send("Sigur ai formulat bine comanda?")
 
         # Load JSON file with credit scores:
         with open("credits.json", "r") as js:

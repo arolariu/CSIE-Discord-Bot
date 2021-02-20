@@ -11,9 +11,6 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.author == self.bot.user:
-            return
-
         # We use a variable to store ctx.content.lower()
         msg = ctx.content.lower()
 
@@ -43,13 +40,16 @@ class OnMessage(commands.Cog):
                     "A aparut o eroare la atribuirea rolului. Contacteaza un moderator/admin/developer!")
 
         # If the user's last word is a quick-poll command, then create a poll:
-        if msg.split()[-1] in reactions.keys():
-            try:
-                reactions_count = msg.split()[-1].count("/")
-                for reaction in range(0, reactions_count + 1, 1):
-                    await ctx.add_reaction(emoji=reactions[msg.split()[-1]][reaction])
-            except AttributeError:
-                await ctx.send("Sigur ai vrut sa faci un poll? Nu recunosc comanda rapida.")
+        try:
+            if msg.split()[-1] in reactions.keys():
+                try:
+                    reactions_count = msg.split()[-1].count("/")
+                    for reaction in range(0, reactions_count + 1, 1):
+                        await ctx.add_reaction(emoji=reactions[msg.split()[-1]][reaction])
+                except AttributeError:
+                    await ctx.send("Sigur ai vrut sa faci un poll? Nu recunosc comanda rapida.")
+        except IndexError:
+            pass  # We pass because it's 99% a false positive and we don't have to do anything.
 
 
 def setup(bot):

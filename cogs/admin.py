@@ -4,7 +4,7 @@ from discord_utils import *
 
 
 # Admin Commands Class
-class Admin(commands.Cog):
+class Admin(commands.Cog, name="Administrator"):
     def __init__(self, bot):
         self.bot = bot
 
