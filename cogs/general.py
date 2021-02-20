@@ -8,8 +8,8 @@ class General(commands.Cog):
         self.bot = bot
 
     # The command $avatar {user} shows the user's current avatar.
-    @commands.command(help="Un avatar tare? Foloseste $avatar {member_tag} pentru a il vedea mai bine!",
-                      description="Comanda $avatar arata avatarul unui utilizator.\nSintaxa:")
+    @commands.command(help="Vezi avatarul unui utilizator.",
+                      description="Un avatar tare? Foloseste $avatar {member_tag} pentru a il vedea mai bine!\nSintaxa:")
     async def avatar(self, ctx, *, user=None):
         if user is not None:
             old_user = self.bot.get_user(int(user[3:-1]))
@@ -19,7 +19,8 @@ class General(commands.Cog):
             return await ctx.channel.send("Ai uitat sa specifici un utilizator.")
 
     # The command $whois {user} provides detailed information about a user.
-    @commands.command(description="Comanda $whois ofera detalii despre un anumit utilizator.")
+    @commands.command(help="Vezi detalii despre un anumit utilizator.",
+                      description="Vrei sa afli mai multe detalii despre un user? Comanda $whois {member_tag} te rezolva!")
     async def whois(self, ctx, *, user=None):
         if user is not None:
             converter = commands.MemberConverter()

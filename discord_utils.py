@@ -8,7 +8,7 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 ##################
 
 VERSION_DATE = "20/02/2021"
-VERSION_NUMBER = "2.2a"
+VERSION_NUMBER = "2.2b"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.
@@ -19,8 +19,7 @@ VERSION_DATA = \
 ++ Actualizarile se pot face on-the-fly.
 ++ Baza de cod a fost restructurata in proportie de 95%.
 ++ Reparat si simplificat meniul de pe #roles.
-++ Adaugat comenzile $ruleta {suma}, $balance {user}, $donate {user} {suma} si $clasament.
-++ Am adaugat un sistem de credite pe server. Un mesaj scris = +3 credite in portofel.
+++ Adaugat peste 10 comenzi noi. Vezi $help.
 ++ Botul este online 24/7 de acum.
     """
 

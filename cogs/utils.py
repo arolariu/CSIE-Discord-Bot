@@ -76,7 +76,8 @@ class Utils(commands.Cog):
                     print(e)
 
     # The command $server provides member and server statistics to the users.
-    @commands.command(description="Comanda $server ofera statistici interesante despre server.")
+    @commands.command(help="Vezi statistici interesante despre server.",
+                      description="Comanda $server ofera statistici interesante despre server.\nSINTAXA:")
     async def server(self, ctx):
         guild = await self.bot.fetch_guild(606206204699738135)
         members = await guild.fetch_members(limit=None).flatten()
@@ -106,7 +107,8 @@ class Utils(commands.Cog):
         return await ctx.send(embed=result)
 
     # The command $ver provides useful information about the bot to the users.
-    @commands.command(description="Comanda $ver ofera informatii suplimentare despre robot.")
+    @commands.command(help="Vezi informatii suplimentare despre robot.",
+                      description="Comanda $ver ofera informatii suplimentare despre robot.\nSINTAXA:")
     async def ver(self, ctx):
         embed = discord.Embed(color=0x000000)
         embed.set_author(name="About this Bot:")

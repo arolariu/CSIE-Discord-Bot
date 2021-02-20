@@ -11,7 +11,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     # Ruleta is a fun mini-game where users can bet their credits away.
-    @commands.command(help="Vrei sa joci la ruleta? Scrie $ruleta si apoi cate credite vrei sa joci!",
+    @commands.command(help="Joaca la ruleta!",
                       description="Pentru a folosi $ruleta, ai nevoie de o balanta de credite pozitiva!\nSintaxa:")
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def ruleta(self, ctx, amount):
@@ -47,19 +47,19 @@ class Fun(commands.Cog):
         msg = await ctx.channel.send(embed=embed)
 
         # Now we get the second number.
-        await sleep(0.7)
+        await sleep(0.3)
         second = random.choice(list(emoji_dex.keys()))
         embed.description = temp + first + "--" + second
         await msg.edit(embed=embed)
 
         # Now we get the third and final number.
-        await sleep(0.7)
+        await sleep(0.3)
         third = random.choice(list(emoji_dex.keys()))
         embed.description = temp + first + "--" + second + "--" + third
         await msg.edit(embed=embed)
 
         # We do some setup for the final result:
-        await sleep(2)
+        await sleep(0.6)
         numbers = (emoji_dex[first], emoji_dex[second], emoji_dex[third])
         numbers = set(numbers)
         result = amount * (-1)  # We initialize result with - amount for the else clause
@@ -138,11 +138,12 @@ SUMA CASTIGATA: {result}
 
         # We update the JSON file:
         data[user] += result
+
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
 
     # The $balance command shows users their current credit score balance.
-    @commands.command(help="Comanda $balance arata cate credite are un utilizator.",
+    @commands.command(help="Arata cate credite are un utilizator.",
                       description="Poti specifica, optional, un user.\nSintaxa:")
     async def balance(self, ctx, *, user=None):
         if user is not None:
@@ -165,8 +166,8 @@ SUMA CASTIGATA: {result}
         return await ctx.channel.send(embed=embed)
 
     # The $donate command allows users to trade credits with each other.
-    @commands.command(help="Esti generos? Comanda $donate iti permite sa donezi credite unui alt utilizator.",
-                      description="SINTAXA:")
+    @commands.command(help="Doneaza o suma modica unui utilizator.",
+                      description="Comanda $donate iti permite sa donezi credite unui alt utilizator.\nSINTAXA:")
     async def donate(self, ctx, user, amount):
         total = int(amount)
         old_user = user
@@ -203,8 +204,8 @@ SUMA CASTIGATA: {result}
         return await ctx.channel.send(embed=embed)
 
     # The $clasament command shows the top 12 users by their credit score balance.
-    @commands.command(help="Vrei sa vezi top 12 cei mai bogati oameni de pe server? Scrie $clasament !",
-                      description="Vezi cei mai bogati 12 oameni de pe acest server.\n Sintaxa:")
+    @commands.command(help="Vezi cei mai bogati 12 oameni de pe server.",
+                      description="Vrei sa vezi top 12 cei mai bogati oameni de pe server? Scrie $clasament!\n Sintaxa:")
     async def clasament(self, ctx):
         with open("credits.json", "r") as js:
             data = json.load(js)

@@ -17,16 +17,24 @@ logger.addHandler(handler)
 
 # Bot Startup:
 bot = commands.Bot(command_prefix='$',
-                   intents=intents)
+                   intents=intents,
+                   description="Acest bot a fost creat de Olariu Alexandru-Razvan de la zero.")
 
-@bot.command()
+
+@bot.command(help="Incarca un plugin.")
 async def load(ctx, extension):
-    bot.load_extension(f'cogs.{extension}')
+    if ctx.author.id == 276709808512696320:
+        bot.load_extension(f'cogs.{extension}')
+    else:
+        return ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
 
 
-@bot.command()
+@bot.command(help="Descarca un plugin.")
 async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
+    if ctx.author.id == 276709808512696320:
+        bot.unload_extension(f'cogs.{extension}')
+    else:
+        return ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
 
 
 for filename in os.listdir('./cogs'):

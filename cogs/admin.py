@@ -9,7 +9,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     # Clear command is used to delete spam messages from a text channel.
-    @commands.command(help="Comanda clear sterge mesajele scrise dintr-un canal.",
+    @commands.command(help="Sterge mesajele scrise dintr-un canal.",
                       description="Pentru a putea folosi comanda clear, sintaxa este:")
     async def clear(self, ctx, amount):
         if ctx.author.id in power_users:
@@ -40,7 +40,7 @@ class Admin(commands.Cog):
             return await ctx.send("Nu aveti destule drepturi pentru a executa aceasta comanda.")
 
     # Update command is used to update the year role of every member in the server.
-    @commands.command(help="Comanda $update actualizeaza rolul de an al membrilor de pe server.",
+    @commands.command(help="Actualizeaza rolul de an al membrilor.",
                       description="Pentru a putea folosi comanda update, sintaxa este:")
     async def update(self, ctx):
         if ctx.author.id in power_users:
