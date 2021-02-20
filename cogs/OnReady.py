@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+
 # To use: automatically when the bot is ready to perform his tasks.
 class OnReady(commands.Cog):
     def __init__(self, bot):

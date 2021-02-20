@@ -34,7 +34,7 @@ class Server(commands.Cog):
         result.add_field(name="După vechime:", value=year_values, inline=False)
         result.add_field(name="După secție :", value=role_values, inline=False)
         result.add_field(name=f"TOTAL MEMBRI: {len(members)}", value="Vă mulțumim tuturor!!!", inline=False)
-        await ctx.send(embed=result)
+        return await ctx.send(embed=result)
 
 
 def setup(bot):

@@ -26,11 +26,11 @@ class Clear(commands.Cog):
                 else:
                     await ctx.send(f"Maximul de mesaje șterse simultan este 50. (WARNING: @{ctx.author})")
             elif ctx.author.id == power_users[0]:
-                await ctx.channel.purge(limit=int(amount))
+                return await ctx.channel.purge(limit=int(amount))
             else:
-                await ctx.send("Nu aveți drepturile necesare pentru a rula această comandă. Îmi pare rău!")
+                return await ctx.send("Nu aveți drepturile necesare pentru a rula această comandă. Îmi pare rău!")
         except ValueError:
-            await ctx.send(
+            return await ctx.send(
                 "Parametrii tăi nu se aseamănă cu cei ceruți. Comanda trebuie să fie de genul $clear {@tu} {nr}")
 
 
