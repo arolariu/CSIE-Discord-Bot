@@ -6,18 +6,23 @@ from asyncio import sleep
 from discord.ext import commands
 
 
-# To use: $ruleta {credits_amount} in a text channel.
-class Ruleta(commands.Cog):
+class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(description="Pentru a putea folosi comanda ruleta, ai nevoie de o balanta de credite pozitiva!")
+    # Ruleta is a fun mini-game where users can bet their credits away.
+    @commands.command(help="Vrei sa joci la ruleta? Scrie $ruleta si apoi cate credite vrei sa joci!",
+                      description="Pentru a folosi $ruleta, ai nevoie de o balanta de credite pozitiva!\nSintaxa:")
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def ruleta(self, ctx, amount):
         emoji_dex = \
             {":one:": 1, ":two:": 2, ":three:": 3,
              ":four:": 4, ":five:": 5, ":six:": 6,
              ":seven:": 7, ":eight:": 8, ":nine:": 9}
-        amount = int(amount)
+        try:
+            amount = int(amount)
+        except ValueError:
+            return await ctx.channel.send("Sigur ai formulat corect comanda?")
         user = str(ctx.author.id)
 
         # JSON Check if the user has enough credits.
@@ -57,7 +62,7 @@ class Ruleta(commands.Cog):
         await sleep(2)
         numbers = (emoji_dex[first], emoji_dex[second], emoji_dex[third])
         numbers = set(numbers)
-        result = -amount  # We initialize result with - amount for the else clause
+        result = amount * (-1)  # We initialize result with - amount for the else clause
 
         # If the user hit 777's:
         if len(numbers) == 1 and 7 in numbers:
@@ -116,12 +121,12 @@ SUMA CASTIGATA: {result}
 
         # If the user hit a lucky number:
         elif len(numbers) == 3 and 7 in numbers:
-            result = 1.3
+            result = amount * 1.3
             embed.description = \
                 f"""
 Ai castigat!! (x1.3 suma pariata)
 SUMA PARIATA: {amount}
-SUMA CASTIGATA: {amount * 1.3}
+SUMA CASTIGATA: {result}
                 """
             await msg.edit(embed=embed)
 
@@ -136,6 +141,89 @@ SUMA CASTIGATA: {amount * 1.3}
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
 
+    # The $balance command shows users their current credit score balance.
+    @commands.command(help="Comanda $balance arata cate credite are un utilizator.",
+                      description="Poti specifica, optional, un user.\nSintaxa:")
+    async def balance(self, ctx, *, user=None):
+        if user is not None:
+            old_user = self.bot.get_user(int(user[3:-1]))
+            user = str(user[3:-1])
+
+        with open("credits.json", "r") as js:
+            data = json.load(js)
+
+        if user is None:
+            embed = discord.Embed(color=0x00FF00,
+                                  title=f"BALANTA: {ctx.author.name}",
+                                  description=f"**{data[str(ctx.author.id)]}** credite."
+                                  )
+        else:
+            embed = discord.Embed(color=0x0000FF,
+                                  title=f"BALANTA: {old_user}",
+                                  description=f"**{data[str(user)]}** credite.")
+
+        return await ctx.channel.send(embed=embed)
+
+    # The $donate command allows users to trade credits with each other.
+    @commands.command(help="Esti generos? Comanda $donate iti permite sa donezi credite unui alt utilizator.",
+                      description="SINTAXA:")
+    async def donate(self, ctx, user, amount):
+        total = int(amount)
+        old_user = user
+        user = str(user[3:-1])
+
+        # Load JSON file with credit scores:
+        with open("credits.json", "r") as js:
+            data = json.load(js)
+
+        # Basic Checks for donation abuses:
+        if int(user) == int(ctx.author.id):
+            return await ctx.channel.send("Nu poti sa iti dai bani singur.")
+        if total == 0:
+            return await ctx.channel.send("Nu poti sa oferi 0 credite.")
+        if total < 0:
+            return await ctx.channel.send("Nu poti oferi o suma negativa de credite.")
+        if data[str(ctx.author.id)] < total:
+            return await ctx.channel.send("Nu ai destule credite pentru a dona acea suma.")
+
+        # Check if the receiver is in the credits.json file:
+        if user in data.keys():
+            data[str(user)] += total
+            data[str(ctx.author.id)] -= total
+        else:
+            return await ctx.channel.send(f"Persoana {old_user} nu exista pe aceast server.")
+
+        with open("credits.json", "w") as js:
+            json.dump(data, js, indent=2)
+
+        embed = discord.Embed(title="DONATIE",
+                              color=0xFAFAFA,
+                              description=f"{ctx.author.name} a donat {total} credite catre {old_user}.")
+
+        return await ctx.channel.send(embed=embed)
+
+    # The $clasament command shows the top 12 users by their credit score balance.
+    @commands.command(help="Vrei sa vezi top 12 cei mai bogati oameni de pe server? Scrie $clasament !",
+                      description="Vezi cei mai bogati 12 oameni de pe acest server.\n Sintaxa:")
+    async def clasament(self, ctx):
+        with open("credits.json", "r") as js:
+            data = json.load(js)
+
+        top_10 = dict(sorted(data.items(), key=lambda item: item[1], reverse=True))
+
+        embed = discord.Embed(color=0xABBACD,
+                              title="CLASAMENT CREDITE")
+        iterator = 1
+
+        # We iterate through the sorted dict:
+        for key, value in top_10.items():
+            if iterator == 13:
+                return await ctx.channel.send(embed=embed)
+            embed.add_field(name=f"Loc #{iterator}: {str(self.bot.get_user(int(key)))[:-5]}",
+                            value=f"**{value}** credite",
+                            inline=True)
+            iterator += 1
+
 
 def setup(bot):
-    bot.add_cog(Ruleta(bot))
+    bot.add_cog(Fun(bot))

@@ -5,12 +5,7 @@ import discord
 from discord.ext import commands
 
 # Intents for Member logging:
-intents = discord.Intents.default()
-intents.typing = True
-intents.presences = True
-intents.messages = True
-intents.members = True
-intents.reactions = True
+intents = discord.Intents().all()
 
 # Logging Bot Information:
 logger = logging.getLogger('discord')
@@ -23,7 +18,6 @@ logger.addHandler(handler)
 # Bot Startup:
 bot = commands.Bot(command_prefix='$',
                    intents=intents)
-
 
 @bot.command()
 async def load(ctx, extension):
