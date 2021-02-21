@@ -6,7 +6,7 @@ from asyncio import sleep
 from discord.ext import commands
 
 
-class Fun(commands.Cog, name="Casino"):
+class Fun(commands.Cog, name="================================================\nCasino"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -137,7 +137,7 @@ SUMA CASTIGATA: {result}
             await msg.edit(embed=embed)
 
         # We update the JSON file:
-        data[user] += result
+        data[user] += round(result, 3)
 
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
@@ -480,7 +480,7 @@ SUMA CASTIGATA: {result}
             await msg.edit(embed=embed)
 
         # We update the JSON file:
-        data[user] += result
+        data[user] += round(result, 3)
 
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
@@ -497,27 +497,28 @@ SUMA CASTIGATA: {result}
     # The $balance command shows users their current credit score balance.
     @commands.command(help="Arata cate credite are un utilizator.",
                       description="Poti specifica, optional, un user.\nSintaxa:")
-    async def balance(self, ctx, *, user=None):
-        old_user = user  # Just to remove the potential assignment error.
+    async def balance(self, ctx, user=None):
+        old_user = None
         if user is not None:
             try:
                 old_user = self.bot.get_user(int(user[3:-1]))
-                new_user = str(user[3:-1])
+                if old_user is None:
+                    old_user = self.bot.get_user(int(user[2:-1]))
             except ValueError:
                 return await ctx.channel.send("Sigur ai formulat bine comanda?")
 
         with open("credits.json", "r") as js:
             data = json.load(js)
 
-        if user is None:
+        if old_user is None:
             embed = discord.Embed(color=0x00FF00,
                                   title=f"BALANTA: {ctx.author.name}",
                                   description=f"**{data[str(ctx.author.id)]}** credite."
                                   )
         else:
             embed = discord.Embed(color=0x0000FF,
-                                  title=f"BALANTA: {old_user}",
-                                  description=f"**{data[str(new_user)]}** credite.")
+                                  title=f"BALANTA: {old_user.name}",
+                                  description=f"**{data[str(old_user.id)]}** credite.")
 
         return await ctx.channel.send(embed=embed)
 
@@ -527,8 +528,9 @@ SUMA CASTIGATA: {result}
     async def donate(self, ctx, user, amount):
         try:
             total = int(amount)
-            old_user = user
-            new_user = str(user[3:-1])
+            old_user = self.bot.get_user(int(user[3:-1]))
+            if old_user is None:
+                old_user = self.bot.get_user(int(user[2:-1]))
         except ValueError:
             return await ctx.channel.send("Sigur ai formulat bine comanda?")
 
@@ -537,7 +539,7 @@ SUMA CASTIGATA: {result}
             data = json.load(js)
 
         # Basic Checks for donation abuses:
-        if int(new_user) == int(ctx.author.id):
+        if old_user.id == ctx.author.id:
             return await ctx.channel.send("Nu poti sa iti dai bani singur.")
         if total == 0:
             return await ctx.channel.send("Nu poti sa oferi 0 credite.")
@@ -547,8 +549,8 @@ SUMA CASTIGATA: {result}
             return await ctx.channel.send("Nu ai destule credite pentru a dona acea suma.")
 
         # Check if the receiver is in the credits.json file:
-        if str(new_user) in data.keys():
-            data[str(new_user)] += total
+        if str(old_user.id) in data.keys():
+            data[str(old_user.id)] += total
             data[str(ctx.author.id)] -= total
         else:
             return await ctx.channel.send(f"Persoana {old_user} nu exista pe aceast server.")
@@ -569,26 +571,31 @@ SUMA CASTIGATA: {result}
     async def rob(self, ctx, user):
         try:
             old_user = self.bot.get_user(int(user[3:-1]))
-            new_user = str(user[3:-1])
+            if old_user is None:
+                old_user = self.bot.get_user(int(user[2:-1]))
         except ValueError:
             return await ctx.channel.send("Sigur ai formulat bine comanda?")
+
         # Load JSON file with credit scores:
         with open("credits.json", "r") as js:
             data = json.load(js)
 
         # Basic Checks for rob abuses:
-        if int(new_user) == int(ctx.author.id):
+        if old_user.id == ctx.author.id:
             return await ctx.channel.send("Nu poti sa te jefuiesti.")
 
         # Setup for the probabilities of stealing and not succeding:
-        if str(new_user) in data.keys():
+        if str(old_user.id) in data.keys():
             probability_to_steal = random.randint(0, 100)
             probabilty_to_fail = random.randint(0, 100)
-            lower_bound_of_credits = data[str(new_user)] // 7
-            upper_bound_of_credits = data[str(new_user)]
+            lower_bound_of_credits = data[str(old_user.id)] // 7
+            upper_bound_of_credits = data[str(old_user.id)] // 3
             amount_of_credits_stolen = random.randint(lower_bound_of_credits, upper_bound_of_credits)
+        else:
+            return await ctx.channel.send(f"Utilizatorul {str(old_user)[:-5]} nu exista in baza de date locala.")
+
         if probabilty_to_fail <= probability_to_steal:
-            data[str(new_user)] -= amount_of_credits_stolen
+            data[str(old_user.id)] -= amount_of_credits_stolen
             data[str(ctx.author.id)] += amount_of_credits_stolen
             embed = discord.Embed(
                 title=f":currency_exchange: FURT REUSIT (+{amount_of_credits_stolen} credite) :currency_exchange: ",
@@ -599,10 +606,7 @@ SUMA CASTIGATA: {result}
                 title=f":exclamation: FURT DEPISTAT (-{amount_of_credits_stolen * 2.5} credite) :exclamation:",
                 color=0xAFAFAF,
                 description=f"{ctx.author.name} a vrut sa fure {amount_of_credits_stolen} credite de la {str(old_user)[:-5]}.")
-            if data[str(ctx.author.id)] >= (amount_of_credits_stolen * 2.5):
-                data[str(ctx.author.id)] -= (amount_of_credits_stolen * 2.5)
-            else:
-                data[str(ctx.author.id)] = 0
+            data[str(ctx.author.id)] -= (amount_of_credits_stolen * 2.5)
 
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)

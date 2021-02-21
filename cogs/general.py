@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 # General Commands Class
-class General(commands.Cog, name="Generale"):
+class General(commands.Cog, name="================================================\nGenerale"):
     def __init__(self, bot):
         self.bot = bot
 
