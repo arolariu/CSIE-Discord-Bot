@@ -1,4 +1,8 @@
-2021-02-21 01:22:44,726:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
-2021-02-21 01:22:44,735:INFO:discord.client: logging in using static token
-2021-02-21 01:22:45,323:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
-2021-02-21 01:22:45,543:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-f4xr",{"micros":67796,"calls":["discord-sessions-prd-2-80",{"micros":64379,"calls":["start_session",{"micros":40865,"calls":["api-prd-main-fwxd",{"micros":37063,"calls":["get_user",{"micros":3967},"add_authorized_ip",{"micros":2438},"get_guilds",{"micros":8382},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":16402,"calls":[]}]}]}] (Session ID: 9878edbdf2ca597e19e19b6e6b58bc09).
+2021-02-21 03:47:03,581:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2021-02-21 03:47:03,596:INFO:discord.client: logging in using static token
+2021-02-21 03:47:04,179:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2021-02-21 03:47:04,433:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-jv7k",{"micros":100909,"calls":["discord-sessions-prd-2-56",{"micros":97326,"calls":["start_session",{"micros":69922,"calls":["api-prd-main-g1m1",{"micros":64209,"calls":["get_user",{"micros":7348},"add_authorized_ip",{"micros":4459},"get_guilds",{"micros":5058},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":7891,"calls":[]}]}]}] (Session ID: 6a3003fba4ecf9a392db3ed3bc248a40).
+2021-02-21 03:48:23,934:INFO:discord.client: Cleaning up tasks.
+2021-02-21 03:48:23,934:INFO:discord.client: Cleaning up after 1 tasks.
+2021-02-21 03:48:23,936:INFO:discord.client: All tasks finished cancelling.
+2021-02-21 03:48:23,937:INFO:discord.client: Closing the event loop.
