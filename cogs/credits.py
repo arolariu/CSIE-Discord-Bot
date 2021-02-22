@@ -564,6 +564,108 @@ SUMA CASTIGATA: {result}
 
         return await ctx.channel.send(embed=embed)
 
+    # The $deposit command allows users to safely stash away credits in an account.
+    @commands.command(help="Depoziteaza-ti creditele intr-un loc sigur!",
+                      description="Comanda $deposit te ajuta sa iti depozitezi banii intr-un loc sigur, unde nu pot fi furati.\nSINTAXA:")
+    async def deposit(self, ctx, amount):
+        try:
+            total = int(amount)
+        except ValueError:
+            return await ctx.channel.send("Suma trebuie sa fie de tip intreg.")
+
+        # Check if the user wants to deposit a negative balance:
+        if total < 0:
+            return await ctx.channel.send("Nu poti depozita o suma negativa de credite.")
+
+        # Load the current credits JSON file:
+        with open("credits.json", "r") as js:
+            balance = json.load(js)
+
+        # Substract the amount:
+        balance[str(ctx.author.id)] -= total
+
+        # Save the modified credits JSON file:
+        with open("credits.json", "w") as js:
+            json.dump(balance, js, indent=2)
+
+        # Load the current deposits JSON file:
+        with open("deposits.json", "r") as dp:
+            deposit = json.load(dp)
+
+        # Check if the user has made another deposit in the past:
+        try:
+            deposit[str(ctx.author.id)] += total
+        except KeyError:
+            deposit[str(ctx.author.id)] = total
+
+        # Save the modified deposits JSON file:
+        with open("deposits.json", "w") as js:
+            json.dump(deposit, js, indent=2)
+
+        # Notify the user of the status of the deposit:
+        embed = discord.Embed(color=0xABCDEF,
+                              title=":money_with_wings: DEPOZIT BANCAR :money_with_wings:",
+                              description=f"{ctx.author.name} a facut un depozit de {total} credite.")
+        return await ctx.channel.send(embed=embed)
+
+    # The $loan command allows users to retrieve some credits from their account.
+    @commands.command(help="Scoate niste credite din depozit.",
+                      description="Comanda $loan iti permite sa scoti credite din contul tau bancar (depozit).\nSINTAXA:")
+    async def loan(self, ctx, amount):
+        try:
+            total = int(amount)
+        except ValueError:
+            return await ctx.channel.send("Sigur ai formulat comanda corect?")
+
+        # Check if the user wants to loan a negative amount of money:
+        if total <= 0:
+            return await ctx.channel.send("Nu poti scoate o suma negativa din depozit.")
+
+        # Open the current deposits JSON file:
+        with open("deposits.json", "r") as js:
+            data = json.load(js)
+
+        # Substract the amount required:
+        if total > data[str(ctx.author.id)]:
+            return await ctx.channel.send("Nu poti scoate din depozit mai mult decat ai.")
+        data[str(ctx.author.id)] -= total
+
+        # Save the modified deposits JSON file:
+        with open("deposits.json", "w") as js:
+            json.dump(data, js, indent=2)
+
+        # Open the current credits JSON file:
+        with open("credits.json", "r") as js:
+            data = json.load(js)
+
+        # Save the new balance and exit:
+        data[str(ctx.author.id)] += total
+        with open("credits.json", "w") as js:
+            json.dump(data, js, indent=2)
+
+        # Notify the user of the command status:
+        embed = discord.Embed(color=0xCACACA,
+                              title=":star_struck: EXTRAGERE NUMERAR :star_struck:",
+                              description=f"{ctx.author.name} a extras {total} credite din depozitul sau.")
+        return await ctx.channel.send(embed=embed)
+
+    # The $check command allows users to check their bank account.
+    @commands.command(help="Vezi cati bani ai in depozit.",
+                      description="Comanda $check iti permite vizualizarea numerarului din depozit.\nSINTAXA:")
+    async def check(self, ctx):
+        # Open the current deposits json file:
+        with open("deposits.json", "r") as js:
+            data = json.load(js)
+
+        # Check to see if the user exists:
+        if str(ctx.author.id) in data.keys():
+            embed = discord.Embed(color=0xBACADA,
+                                  title=":bank: VIZUALIZARE DEPOZIT :bank:",
+                                  description=f"{ctx.author.name} : **{data[str(ctx.author.id)]}** credite")
+            await ctx.message.add_reaction("<:hehe_boi:749712297051553953>")
+            return await ctx.channel.send(embed=embed, delete_after=5)
+        return await ctx.channel.send(f"{ctx.author.name}, nu ai facut un depozit momentan.")
+
     # The $rob command allows uses to attempt to rob other users.
     @commands.command(help="Incearca sa furi credite de la cineva.",
                       description="Comanda $rob iti permite sa incerci sa furi creditele altui utilizator.\nSINTAXA:")
@@ -593,6 +695,10 @@ SUMA CASTIGATA: {result}
             amount_of_credits_stolen = random.randint(lower_bound_of_credits, upper_bound_of_credits)
         else:
             return await ctx.channel.send(f"Utilizatorul {str(old_user)[:-5]} nu exista in baza de date locala.")
+
+        # Check if the robbed user has a negative balance:
+        if data[str(old_user.id)] < 0:
+            return await ctx.channel.send("Nu poti fura de la un utilizator ce are datorii.")
 
         if probabilty_to_fail <= probability_to_steal:
             data[str(old_user.id)] -= amount_of_credits_stolen
