@@ -724,7 +724,7 @@ SUMA CASTIGATA: {result}
     async def rob_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(
-                title=f":exclamation: Nu poti furta instant, mai asteapta {error.retry_after:.2f} secunde :exclamation:",
+                title=f":exclamation: Nu poti fura instant, mai asteapta {error.retry_after:.2f} secunde :exclamation:",
                 color=0xFF0000)
             await ctx.channel.send(embed=embed, delete_after=15)
 
@@ -749,6 +749,42 @@ SUMA CASTIGATA: {result}
                             value=f"**{value}** credite",
                             inline=True)
             iterator += 1
+
+    # The $daily command gives users a daily bonus of 150 credits.
+    @commands.command(help="Scrie $daily pentru o doza de credite!",
+                      description="Primeste 150 credite in fiecare zi, cand activezi aceasta comanda!")
+    @commands.cooldown(1, 43200, commands.BucketType.user)
+    async def daily(self, ctx):
+
+        # Load JSON file with credit scores:
+        with open("credits.json", "r") as js:
+            data = json.load(js)
+
+        # Give users 150 credits.
+        if str(ctx.author.id) in data.keys():
+            data[str(ctx.author.id)] += 150
+        else:
+            return await ctx.channel.send("A intervenit o eroare. Contacteaza-l pe @중간끝#6826")
+
+        # Show the user a nice message:
+        embed = discord.Embed(color=0x0AFFA0,
+                              title=":champagne_glass: Bonus Zilnic! :champagne_glass:",
+                              description=f"{ctx.author.name} a primit un bonus de 150 de credite!")
+
+        # Save JSON file with new credit scores:
+        with open("credits.json", "w") as js:
+            json.dump(data, js, indent=2)
+
+        return await ctx.channel.send(embed=embed)
+
+    # Daily Command Error Handler
+    @daily.error
+    async def daily_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(
+                title=f":exclamation: Comanda daily merge odata la 12h, mai asteapta {(error.retry_after / 60):.2f} minute :exclamation:",
+                color=0xFF0000)
+            await ctx.channel.send(embed=embed, delete_after=30)
 
 
 def setup(bot):
