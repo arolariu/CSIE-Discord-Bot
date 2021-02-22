@@ -7,8 +7,8 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 # VERSION CONTROL:
 ##################
 
-VERSION_DATE = "21/02/2021"
-VERSION_NUMBER = "2.2f"
+VERSION_DATE = "22/02/2021"
+VERSION_NUMBER = "2.3a"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.
@@ -314,3 +314,84 @@ reactions = \
     }
 
 
+faq_list = \
+(
+# 0 & 1
+"Q: Cât costă o restanță?",
+"A: 75 RON.",
+    # 2 & 3
+"Q: De câte ori pot să dau o restanță?",
+"A: Până ajungi, într-un final, să treci acel examen!",
+    # 4 & 5
+"Q: Ce se întâmplă dacă nu reușesc să promovez o materie?",
+"A: Pentru a continua și a nu fi exmatriculat, trebuie să plătești un an suplimentar!",
+    # 6 & 7
+"Q: Cât costă un an suplimentar?",
+"A: Anul suplimentar diferă la cost, în funcție de câte restanțe ai și pe ce semestre sunt.",
+    # 8 & 9
+"Q: De câte ori îmi pot lua acest an suplimentar?",
+"A: Doar o singură dată.",
+    # 10 & 11
+"Q: Ce se întâmplă dacă tot nu reușesc să promovez unele restanțe, în anul suplimentar?",
+"A: Va trebui să te reînscrii la facultate, în anul cel mai mic posibil, acolo unde se predă restanța.",
+    # 12 & 13
+"Q: Există un mod de a tranzita din clădirea CSIE în clădirea ASE, rapid?",
+"A: Desigur, la etajul 1 există un pod care leagă cele 3 clădiri principale între ele.",
+    # 14 & 15
+"Q: Există un magazin în apropiere de facultate?",
+"A: Da, recomand Carrefour fix de lângă clădirea CSIE, e super bun și are prețuri decente!",
+    # 16 & 17
+"Q: Cum pot să verific pe ce dată și în ce sală am examenele?",
+"A: 98% din timp, o să vă arate șeful/șefa de grupă/serie, dacă totuși, nu știe nici ea/el, poți contacta platforma webstudent.ase.ro!",
+    # 18 & 19
+"Q: Care lift merge mai bine din cele două din clădire?",
+"A: Cel din dreapta, cel din stânga mereu e ocupat.",
+    # 20 & 21
+"Q: Pot recupera seminarele pierdute la alt profesor?",
+"A: În 95% din cazuri, nu vor fi punctate.",
+    # 22 & 23
+"Q: Pot recupera seminarele pierdute la altă grupă, cu același profesor?",
+"A: În 70% din cazuri, nu vor fi punctate.",
+    # 24 & 25
+"Q: Am nevoie să recuperez cursurile?",
+"A: Cel mai probabil, da. Deoarece se predă foarte multă materie, necesară pentru examen.",
+    # 26 & 27
+"Q: Câte prezențe trebuie să am la un seminar? Dar la un curs?",
+"A: La seminar este indicat să ai cel puțin 10 prezențe. La curs, depinde de profesor.",
+    # 28 & 29
+"Q: Pot să stau in foișor dacă nu am ce face?",
+"A: Desigur, atâta timp cât gășești și loc :)",
+    # 30 & 31
+"Q: Am unde să îmi parchez bicicleta/mașina?",
+"A: Bicicleta desigur, mașina doar pe trotuar, nu recomand.",
+    # 32 & 33
+"Q: Mă pot duce la secretariatul din altă cladire dacă am nevoie de ajutor?",
+"A: Cel mai probabil îți va fi spus să te duci la secretariatul din CSIE.",
+    # 34 & 35
+"Q: Este obligatorie prezența la cursuri? Dar seminare?",
+"A: Prezența la cursuri este impusă de profesorul de curs. La seminare este obligatorie prezența.",
+    # 36 & 37
+"Q: Merită să aștept liftul dacă am multe etaje de urcat?",
+"A: Nu prea merita, decât dacă aveți un profesor care întarzie și el.",
+    # 38 & 39
+"Q: Trebuie să vin cu legitimația la examen?",
+"A: Da, este recomandat să aduci și cartea de identitate.",
+    # 40 & 41
+"Q: Pot să vin la sala de sport din ASE să mă antrenez?",
+"A: Trebuie să vorbești mai întâi cu profesorul tău de sport.",
+    # 42 & 43
+"Q: Pic la taxa dacă am restanță la sport?",
+"A: Da, dacă nu ai reușit să iei celelalte examene.",
+    # 44 & 45
+"Q: Pot să închiriez orice carte de la bibliotecă?",
+"A: Desigur, atâta timp cât o înapoiezi în maxim două săptămâni.",
+    # 46 & 47
+"Q: Pot să stau cât vreau la bibliotecă?",
+"A: Fiecare bibliotecă din ASE are un program de funcționare.",
+    # 48 & 49
+"Q: Pot să merg la alte cămine în vizită?",
+"A: Desigur, dar asigură-te că ai totuși legitimația la tine.",
+    # 50 & 51
+"Q: Pot să plătesc taxa/chiria cu cardul/online banking?",
+"A: Desigur! Doar trebuie să completezi corect IBAN-ul și câmpurile necesare."
+)

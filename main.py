@@ -44,3 +44,4 @@ for filename in os.listdir('./cogs'):
 
 #keep_alive()
 #bot.run(os.getenv('TOKEN'))
+bot.run("NjEzMTU0MDY2NjYyNTU1NjQ4.XVsyOQ.mEaT1H2BLgQZ0eCOOVCeXWu1alg")
