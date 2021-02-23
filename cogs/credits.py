@@ -25,6 +25,9 @@ class Fun(commands.Cog, name="================================================\n
             return await ctx.channel.send("Sigur ai formulat corect comanda?")
         user = str(ctx.author.id)
 
+        if amount <= 0:
+            return await ctx.channel.send("Nu poti paria o suma atat de mica.")
+
         # JSON Check if the user has enough credits.
         with open("credits.json", "r") as js:
             try:
@@ -39,7 +42,7 @@ class Fun(commands.Cog, name="================================================\n
                 return await ctx.channel.send("Eroare interna. Contacteaza-l pe 중간끝#6826")
 
         # We play the main game, if we have not returned yet.
-        temp = "Numere pe ruleta:\n"
+        temp = ":slot_machine: NUMERE PE RULETA :slot_machine: \n"
         first = random.choice(list(emoji_dex.keys()))
         embed = discord.Embed(title="RULETA",
                               color=0x00FF00,
@@ -99,10 +102,10 @@ SUMA CASTIGATA: {result}
 
         # If the user hit 2 lucky numbers:
         elif len(numbers) == 2 and 7 in numbers:
-            result = amount * 2.3
+            result = amount * 2.23
             embed.description = \
                 f"""
-Ai castigat!! (x2.3 suma pariata)
+Ai castigat!! (x2.23 suma pariata)
 SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
@@ -110,10 +113,10 @@ SUMA CASTIGATA: {result}
 
         # If the user hit 2 identic numbers:
         elif len(numbers) == 2 and 7 not in numbers:
-            result = amount * 1.7
+            result = amount * 1.97
             embed.description = \
                 f"""
-Ai castigat!! (x1.7 suma pariata)
+Ai castigat!! (x1.97 suma pariata)
 SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
@@ -121,10 +124,10 @@ SUMA CASTIGATA: {result}
 
         # If the user hit a lucky number:
         elif len(numbers) == 3 and 7 in numbers:
-            result = amount * 1.3
+            result = amount * 1.23
             embed.description = \
                 f"""
-Ai castigat!! (x1.3 suma pariata)
+Ai castigat!! (x1.23 suma pariata)
 SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
@@ -180,6 +183,9 @@ SUMA CASTIGATA: {result}
             return await ctx.channel.send("Sigur ai formulat corect comanda?")
         user = str(ctx.author.id)
 
+        if amount < 0:
+            return await ctx.channel.send("Nu poti paria o suma atat de mica.")
+
         # JSON Check if the user has enough credits.
         with open("credits.json", "r") as js:
             try:
@@ -196,7 +202,7 @@ SUMA CASTIGATA: {result}
         # We play the main game, if we have not returned yet.
         temp = "Fructe pe slots:\n"
         first = random.choice(list(emoji_dex.keys()))
-        embed = discord.Embed(title="SLOTS",
+        embed = discord.Embed(title=":pepeking: SLOTS :pepeking:",
                               color=0x00FF00,
                               description=temp + first)
         msg = await ctx.channel.send(embed=embed)
@@ -232,6 +238,7 @@ SUMA CASTIGATA: {result}
         result = amount * (-1)  # We initialize result with - amount for the else clause
 
         # Winning Stategies:
+
         # Five Cherries:
         if len(numbers) == 1 and 8 in numbers:
             result = amount * 80085
@@ -262,8 +269,9 @@ SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
             await msg.edit(embed=embed)
+
         # Some Eggplants and some Peaches:
-        elif len(numbers) == 2 and 11 in numbers and 15 in numbers:
+        if len(numbers) == 2 and 11 in numbers and 15 in numbers:
             result = amount * 69
             embed.description = \
                 f"""
@@ -312,8 +320,9 @@ SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
             await msg.edit(embed=embed)
+
         # Some Long Fruits:
-        elif len(numbers) == 3 and 11 in numbers and 12 in numbers and 13 in numbers:
+        if len(numbers) == 3 and 11 in numbers and 12 in numbers and 13 in numbers:
             result = amount * 669.9
             embed.description = \
                 f"""
@@ -342,8 +351,9 @@ SUMA PARIATA: {amount}
 SUMA CASTIGATA: {result}
                 """
             await msg.edit(embed=embed)
+
         # Some Other Fruits v1:
-        elif len(numbers) == 4 and 2 in numbers and 4 in numbers and 14 in numbers:
+        if len(numbers) == 4 and 2 in numbers and 4 in numbers and 14 in numbers:
             result = amount * 30
             embed.description = \
                 f"""
@@ -581,6 +591,10 @@ SUMA CASTIGATA: {result}
         with open("credits.json", "r") as js:
             balance = json.load(js)
 
+        # Check if the user has a negative balance:
+        if balance[str(ctx.author.id)] <= 0 :
+            return await ctx.channel.send("Nu poti depozita bani daca ai o suma negativa. :)")
+
         # Substract the amount:
         balance[str(ctx.author.id)] -= total
 
@@ -709,10 +723,10 @@ SUMA CASTIGATA: {result}
                 description=f"{ctx.author.name} a furat {amount_of_credits_stolen} credite de la {str(old_user)[:-5]}.")
         else:
             embed = discord.Embed(
-                title=f":exclamation: FURT DEPISTAT (-{amount_of_credits_stolen * 2.5} credite) :exclamation:",
+                title=f":exclamation: FURT DEPISTAT (-{amount_of_credits_stolen * 1.5} credite) :exclamation:",
                 color=0xAFAFAF,
                 description=f"{ctx.author.name} a vrut sa fure {amount_of_credits_stolen} credite de la {str(old_user)[:-5]}.")
-            data[str(ctx.author.id)] -= (amount_of_credits_stolen * 2.5)
+            data[str(ctx.author.id)] -= (amount_of_credits_stolen * 1.5)
 
         with open("credits.json", "w") as js:
             json.dump(data, js, indent=2)
@@ -752,7 +766,7 @@ SUMA CASTIGATA: {result}
 
     # The $daily command gives users a daily bonus of 150 credits.
     @commands.command(help="Scrie $daily pentru o doza de credite!",
-                      description="Primeste 150 credite in fiecare zi, cand activezi aceasta comanda!")
+                      description="Primeste 350 credite in fiecare zi, cand activezi aceasta comanda!")
     @commands.cooldown(1, 43200, commands.BucketType.user)
     async def daily(self, ctx):
 
@@ -762,14 +776,14 @@ SUMA CASTIGATA: {result}
 
         # Give users 150 credits.
         if str(ctx.author.id) in data.keys():
-            data[str(ctx.author.id)] += 150
+            data[str(ctx.author.id)] += 350
         else:
             return await ctx.channel.send("A intervenit o eroare. Contacteaza-l pe @중간끝#6826")
 
         # Show the user a nice message:
         embed = discord.Embed(color=0x0AFFA0,
                               title=":champagne_glass: Bonus Zilnic! :champagne_glass:",
-                              description=f"{ctx.author.name} a primit un bonus de 150 de credite!")
+                              description=f"{ctx.author.name} a primit un bonus de 350 de credite!")
 
         # Save JSON file with new credit scores:
         with open("credits.json", "w") as js:

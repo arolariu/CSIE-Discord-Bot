@@ -3,6 +3,7 @@ import logging
 
 import discord
 from discord.ext import commands
+from keep_alive import keep_alive
 
 # Intents for Member logging:
 intents = discord.Intents().all()

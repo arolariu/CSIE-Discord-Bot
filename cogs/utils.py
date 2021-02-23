@@ -140,6 +140,31 @@ class Utils(commands.Cog, name="================================================
         embed.set_image(url=LOGO_GIF)
         return await ctx.send(embed=embed)
 
+    # The command $ping shows details about the Bot's Latency.
+    @commands.command(help="Vezi detalii despre Latency Bot.",
+                      description="Interesat de cifre? Vezi ce latency are botul.")
+    async def ping(self, ctx, tests=100):
+        try:
+            total = int(tests)
+        except ValueError:
+            return await ctx.channel.send("Sigur ai formulat corect comanda?")
+
+        # Check if user wants more than 250 tests:
+        if int(tests) > 250:
+            total = 100
+
+        async with ctx.typing():
+            latency_list = []
+            for _ in range(total):
+                latency = self.bot.latency
+                latency_list.append(latency)
+            latency_average = sum(latency_list) / total
+
+            embed = discord.Embed(color=0xBBFFAA,
+                                  title=f"PING BOT (din {total} teste)",
+                                  description=f"PING: **{round(latency_average * 1000, 2)}ms**")
+        return await ctx.channel.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Utils(bot))
