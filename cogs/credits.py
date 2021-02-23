@@ -42,9 +42,9 @@ class Fun(commands.Cog, name="================================================\n
                 return await ctx.channel.send("Eroare interna. Contacteaza-l pe 중간끝#6826")
 
         # We play the main game, if we have not returned yet.
-        temp = ":slot_machine: NUMERE PE RULETA :slot_machine: \n"
+        temp = "NUMERE PE RULETA\n"
         first = random.choice(list(emoji_dex.keys()))
-        embed = discord.Embed(title="RULETA",
+        embed = discord.Embed(title=":slot_machine: RULETA :slot_machine:",
                               color=0x00FF00,
                               description=temp + first)
         msg = await ctx.channel.send(embed=embed)
@@ -202,7 +202,7 @@ SUMA CASTIGATA: {result}
         # We play the main game, if we have not returned yet.
         temp = "Fructe pe slots:\n"
         first = random.choice(list(emoji_dex.keys()))
-        embed = discord.Embed(title=":pepeking: SLOTS :pepeking:",
+        embed = discord.Embed(title=":peach: SLOTS :eggplant:",
                               color=0x00FF00,
                               description=temp + first)
         msg = await ctx.channel.send(embed=embed)
@@ -583,7 +583,9 @@ SUMA CASTIGATA: {result}
         except ValueError:
             return await ctx.channel.send("Suma trebuie sa fie de tip intreg.")
 
-        # Check if the user wants to deposit a negative balance:
+         # Basic Checks for deposit abuses:
+        if total == 0:
+            return await ctx.channel.send("Nu poti sa depozitezi 0 credite.")
         if total < 0:
             return await ctx.channel.send("Nu poti depozita o suma negativa de credite.")
 
@@ -592,8 +594,11 @@ SUMA CASTIGATA: {result}
             balance = json.load(js)
 
         # Check if the user has a negative balance:
-        if balance[str(ctx.author.id)] <= 0 :
-            return await ctx.channel.send("Nu poti depozita bani daca ai o suma negativa. :)")
+        if balance[str(ctx.author.id)] <= total:
+            return await ctx.channel.send("Nu poti depozita mai multe credite decat ai. :)")
+        if balance[str(ctx.author.id)] <= 0:
+            return await ctx.channel.send("Nu poti depozita credite daca ai o balanta negativa. :)")
+
 
         # Substract the amount:
         balance[str(ctx.author.id)] -= total
@@ -677,7 +682,7 @@ SUMA CASTIGATA: {result}
                                   title=":bank: VIZUALIZARE DEPOZIT :bank:",
                                   description=f"{ctx.author.name} : **{data[str(ctx.author.id)]}** credite")
             await ctx.message.add_reaction("<:hehe_boi:749712297051553953>")
-            return await ctx.channel.send(embed=embed, delete_after=5)
+            return await ctx.channel.send(embed=embed, delete_after=3)
         return await ctx.channel.send(f"{ctx.author.name}, nu ai facut un depozit momentan.")
 
     # The $rob command allows uses to attempt to rob other users.

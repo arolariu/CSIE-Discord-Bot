@@ -8,7 +8,7 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 ##################
 
 VERSION_DATE = "23/02/2021"
-VERSION_NUMBER = "2.3b"
+VERSION_NUMBER = "2.3c"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.

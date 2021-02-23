@@ -1,4 +1,5 @@
 import discord
+import wikipedia
 from discord.ext import commands
 
 
@@ -45,6 +46,147 @@ class General(commands.Cog, name="==============================================
             return await ctx.channel.send(embed=whois)
         else:
             return await ctx.channel.send("Ai uitat sa specifici un utilizator.")
+
+    # The command $wiki {context} provides detailed information about a specified context.
+    @commands.command(help="Cauta pe Wikipedia despre ceva!",
+                      description="Comanda $wiki cauta pe wikipedia despre contextul specificat.\nSINTAXA:")
+    async def wiki(self, ctx, *context):
+        total = " ".join(context)
+        images = []
+        wikipedia.set_lang("ro")
+        ref = wikipedia.suggest(total)
+        if ref is None:
+            try:
+                page = wikipedia.page(title=total)
+                summary = wikipedia.summary(total, chars=2048)
+                embed = discord.Embed(color=0xFABECA,
+                                      title=total.title(),
+                                      description=summary)
+
+                # Image Attachment:
+                if len(page.images) > 0:
+                    for element in page.images:
+                        if str(element)[-3:] == "jpg":
+                            images.append(element)
+                    for element in page.images:
+                        if str(element)[-3:] == "png":
+                            images.append(element)
+                    if len(images) > 0:
+                        embed.set_image(url=images[0])
+                    elif len(page.images) > 2:
+                        embed.set_image(url=page.images[2])
+
+                # Reference Attachment:
+                if len(page.references) > 0:
+                    embed.set_footer(text=f"Vezi si: \n{page.references[0]}\n{page.references[len(page.references) // 2]}\n{page.references[-1]}")
+
+                return await ctx.channel.send(embed=embed)
+            except wikipedia.DisambiguationError:
+                return await ctx.channel.send("Nu inteleg la ce te referi...")
+            except wikipedia.PageError:
+                return await ctx.channel.send("Eroare contactare API Wikipedia. (API Timeout.)")
+
+        else:
+            msg = await ctx.channel.send(f"Te referi cumva la:\n'{ref}'?")
+            await msg.add_reaction("✔")
+            await msg.add_reaction("❌")
+            async with ctx.typing():
+                reaction, user = await self.bot.wait_for("reaction_add")
+                if str(reaction) == "✔":
+                    try:
+                        page = wikipedia.page(title=ref)
+                        summary = wikipedia.summary(ref, chars=2048, auto_suggest=True)
+                        embed = discord.Embed(color=0xFABECA,
+                                              title=str(ref).title(),
+                                              description=summary)
+
+                        # Image Attachment:
+                        if len(page.images) > 0:
+                            for element in page.images:
+                                if str(element)[-3:] == "jpg":
+                                    images.append(element)
+                            for element in page.images:
+                                if str(element)[-3:] == "png":
+                                    images.append(element)
+                        if len(images) > 0:
+                            embed.set_image(url=images[0])
+                        elif len(page.images) > 2:
+                            embed.set_image(url=page.images[2])
+
+                        # Reference Attachment:
+                        if len(page.references) > 0:
+                            embed.set_footer(text=f"Vezi si: \n{page.references[0]}\n{page.references[len(page.references) // 2]}\n{page.references[-1]}")
+
+                        return await ctx.channel.send(embed=embed)
+                    except wikipedia.PageError:
+                        return await ctx.channel.send("Eroare contactare API Wikipedia. (API Timeout.)")
+                    except wikipedia.DisambiguationError:
+                        return await ctx.channel.send("Eroare contactare API Wikipedia. (Suggestion not found.)")
+                else:
+                    return await ctx.channel.send("Te rog sa particularizezi cautarea mai mult atunci.")
+
+    # The command $ref {context} provides references to the specified context.
+    @commands.command(help="Vezi referinte pentru un subiect.",
+                      description="Comanda $ref arata referinte, gasite de pe wikipedia, pentru un context.\nSINTAXA:")
+    async def ref(self, ctx, *context):
+        total = " ".join(context)
+        wikipedia.set_lang("en")
+        ref = wikipedia.suggest(total)
+        ref_list = ""
+        if ref is None:
+            try:
+                page = wikipedia.page(title=total)
+                if len(page.references) > 0:
+                    for item in page.references:
+                        if len(ref_list) < 2000:
+                            ref_list += item
+                            ref_list += "\n"
+                        else:
+                            break
+                else:
+                    ref_list = "Nu am gasit materiale pentru subiectul specificat..."
+
+                embed = discord.Embed(color=0xFEDCBA,
+                                      title=f"Materiale despre {total.title()}",
+                                      description=ref_list[:2048])
+                return await ctx.channel.send(embed=embed)
+
+            except wikipedia.PageError:
+                return await ctx.channel.send("Eroare contactare API Wikipedia. (API Timeout.)")
+
+            except wikipedia.DisambiguationError:
+                return await ctx.channel.send("Eroare contactare API Wikipedia. (Suggestion not found.)")
+        else:
+            try:
+                msg = await ctx.channel.send(f"Te referi cumva la:\n'{ref}'?")
+                await msg.add_reaction("✔")
+                await msg.add_reaction("❌")
+                async with ctx.typing():
+                    reaction, user = await self.bot.wait_for("reaction_add")
+                    if str(reaction) == "✔":
+                        page = wikipedia.page(title=ref)
+                        if len(page.references) > 0:
+                            for item in page.references:
+                                if len(ref_list) < 2000:
+                                    ref_list += item
+                                    ref_list += "\n"
+                                else:
+                                    break
+                        else:
+                            ref_list = "Nu am gasit materiale pentru subiectul specificat..."
+
+                        embed = discord.Embed(color=0xFEDCBA,
+                                              title=f"Materiale despre {str(ref).title()}",
+                                              description=ref_list[:2048])
+                        return await ctx.channel.send(embed=embed)
+                    else:
+                        return await ctx.channel.send("Te rog sa particularizezi mai mult cautarea atunci.")
+
+            except wikipedia.PageError:
+                return await ctx.channel.send("Eroare contactare API Wikipedia. (API Timeout.)")
+
+            except wikipedia.DisambiguationError:
+                return await ctx.channel.send("Eroare contactare API Wikipedia. (Suggestion not found.)")
 
 
 def setup(bot):

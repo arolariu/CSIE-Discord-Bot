@@ -141,7 +141,7 @@ class Utils(commands.Cog, name="================================================
         return await ctx.send(embed=embed)
 
     # The command $ping shows details about the Bot's Latency.
-    @commands.command(help="Vezi detalii despre Latency Bot.",
+    @commands.command(help="Vezi latency Bot.",
                       description="Interesat de cifre? Vezi ce latency are botul.")
     async def ping(self, ctx, tests=100):
         try:
@@ -149,8 +149,8 @@ class Utils(commands.Cog, name="================================================
         except ValueError:
             return await ctx.channel.send("Sigur ai formulat corect comanda?")
 
-        # Check if user wants more than 250 tests:
-        if int(tests) > 250:
+        # Check if user wants more than 500 tests:
+        if int(tests) > 500:
             total = 100
 
         async with ctx.typing():
