@@ -83,6 +83,60 @@ class Admin(commands.Cog, name="================================================
         else:
             return await ctx.send("Nu aveti destule drepturi pentru a executa aceasta comanda.")
 
+    # The $load command is used to load a custom plugin in the bot.
+    @commands.command(help="Incarca un plugin.")
+    async def load(self, ctx, extension):
+        if ctx.author.id == 276709808512696320:
+            try:
+                self.bot.load_extension(f'cogs.{extension}')
+            except discord.ext.commands.errors.ExtensionNotFound:
+                return await ctx.channel.send(f"Nu am gasit fisierul {extension}")
+            except discord.ext.commands.errors.ExtensionAlreadyLoaded:
+                return await ctx.channel.send(f"Extensia {extension} a fost incarcata deja.")
+            except discord.ext.commands.errors.ExtensionFailed:
+                return await ctx.channel.send(f"Extensia {extension} are o eroare.")
+        else:
+            return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
+
+    # The $reload command is used to reload a custom plugin for the bot.
+    @commands.command(help="Restarteaza un plugin.")
+    async def reload(self, ctx, extension):
+        if ctx.author.id == 276709808512696320:
+            try:
+                self.bot.reload_extension(f'cogs.{extension}')
+            except discord.ext.commands.errors.ExtensionNotFound:
+                return await ctx.channel.send(f"Nu am gasit fisierul {extension}")
+            except discord.ext.commands.errors.ExtensionAlreadyLoaded:
+                return await ctx.channel.send(f"Extensia {extension} a fost incarcata deja.")
+            except discord.ext.commands.errors.ExtensionFailed:
+                return await ctx.channel.send(f"Extensia {extension} are o eroare.")
+        else:
+            return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
+
+    # The $unload command is used to unload a custom plugin from the bot.
+    @commands.command(help="Descarca un plugin.")
+    async def unload(self, ctx, extension):
+        if ctx.author.id == 276709808512696320:
+            try:
+                self.bot.unload_extension(f'cogs.{extension}')
+            except discord.ext.commands.errors.ExtensionNotFound:
+                return await ctx.channel.send(f"Nu am gasit fisieru {extension}")
+            except discord.ext.commands.errors.ExtensionAlreadyLoaded:
+                return await ctx.channel.send(f"Extensia {extension} a fost incarcata deja.")
+            except discord.ext.commands.errors.ExtensionFailed:
+                return await ctx.channel.send(f"Extensia {extension} are o eroare.")
+        else:
+            return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
+
+    # The $print command is used to test different bot functionalities.
+    @commands.command(help="Pentru DEBUG comenzi.")
+    async def print(self, ctx, *args):
+        if ctx.author.id in power_users:
+            result = " ".join([i for i in args])
+            return await ctx.channel.send(result)
+        else:
+            return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

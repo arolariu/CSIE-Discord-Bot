@@ -1,11 +1,7 @@
-import os
-import platform
-
-from discord.ext import commands
-from discord_utils import *
+from funcs import *
 
 
-class Utils(commands.Cog, name="================================================\nUtile"):
+class Utils(commands.Cog, name="================================================\nUtils"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -79,91 +75,19 @@ class Utils(commands.Cog, name="================================================
     @commands.command(help="Vezi statistici interesante despre server.",
                       description="Comanda $server ofera statistici interesante despre server.\nSINTAXA:")
     async def server(self, ctx):
-        guild = await self.bot.fetch_guild(606206204699738135)
-        members = await guild.fetch_members(limit=None).flatten()
-        year_results = server_years(members)
-        role_results = server_roles(members)
-        year_values = \
-            f"""
-**AN I  :** {year_results["AN I"]} membri. ({round(year_results["AN I"] * 100 / len(members), 2)}% din total.)
-**AN II :** {year_results["AN II"]} membri. ({round(year_results["AN II"] * 100 / len(members), 2)}% din total.)
-**AN III:** {year_results["AN III"]} membri. ({round(year_results["AN III"] * 100 / len(members), 2)}% din total.)
-**Alumni:** {year_results["AN IV+"]} membri. ({round(year_results["AN IV+"] * 100 / len(members), 2)}% din total.)
-            """
-
-        role_values = \
-            f"""
-**CIBERNETICĂ:** {role_results["CIBERNETICĂ"]} membri. ({round(role_results["CIBERNETICĂ"] * 100 / len(members), 2)}% din total.)
-**INFORMATICĂ:** {role_results["INFORMATICĂ ECONOMICĂ"]} membri. ({round(role_results["INFORMATICĂ ECONOMICĂ"] * 100 / len(members), 2)}% din total.)
-**STATISTICĂ :** {role_results["STATISTICĂ"]} membri. ({round(role_results["STATISTICĂ"] * 100 / len(members), 2)}% din total.)
-**VIZITATORI :** {role_results["VIZITATOR"]} membri. ({round(role_results["VIZITATOR"] * 100 / len(members), 2)}% din total.) 
-            """
-
-        result = discord.Embed(color=0xff0000)
-        result.set_author(name="Statistica Server CSIE++")
-        result.add_field(name="După vechime:", value=year_values, inline=False)
-        result.add_field(name="După secție :", value=role_values, inline=False)
-        result.add_field(name=f"TOTAL MEMBRI: {len(members)}", value="Vă mulțumim tuturor!!!", inline=False)
-        return await ctx.send(embed=result)
+        await server_func(self.bot, ctx)
 
     # The command $ver provides useful information about the bot to the users.
     @commands.command(help="Vezi informatii suplimentare despre robot.",
                       description="Comanda $ver ofera informatii suplimentare despre robot.\nSINTAXA:")
     async def ver(self, ctx):
-        embed = discord.Embed(color=0x000000)
-        embed.set_author(name="About this Bot:")
-        about_info_1 = \
-            f"""
-**Bot Developer:** <@276709808512696320> (중간끝#6826)
-**UID:** 613154066662555648
-**Latency:** {round(self.bot.latency * 1000, 2)}ms
-**Current Working Directory:** {os.getcwd()}
-**Operating Platform:** {platform.platform(aliased=True)}
-**Compiler being used:** {platform.python_compiler()}
-**Operating System:** {platform.system()}
-**OS version:** {platform.version()}
-**CPU arhitecture:** {platform.machine()}
-**CPU type:** {platform.processor()}
-**CPU cores:** {os.cpu_count()} cores
-            """
-        about_info_2 = \
-            f"""
-중간끝 ( B O T ) este momentan la versiunea **{VERSION_NUMBER}** (Ultima actualizare: **{VERSION_DATE}**)
-
-    **În această versiune:**
-        ```
-{VERSION_DATA}
-        ```
-    """
-        embed.add_field(name="Bot Status:", value=about_info_1, inline=False)
-        embed.add_field(name="Bot Description:", value=about_info_2, inline=False)
-        embed.set_image(url=LOGO_GIF)
-        return await ctx.send(embed=embed)
+        await ver_func(self.bot, ctx)
 
     # The command $ping shows details about the Bot's Latency.
     @commands.command(help="Vezi latency Bot.",
                       description="Interesat de cifre? Vezi ce latency are botul.")
     async def ping(self, ctx, tests=100):
-        try:
-            total = int(tests)
-        except ValueError:
-            return await ctx.channel.send("Sigur ai formulat corect comanda?")
-
-        # Check if user wants more than 500 tests:
-        if int(tests) > 500:
-            total = 100
-
-        async with ctx.typing():
-            latency_list = []
-            for _ in range(total):
-                latency = self.bot.latency
-                latency_list.append(latency)
-            latency_average = sum(latency_list) / total
-
-            embed = discord.Embed(color=0xBBFFAA,
-                                  title=f"PING BOT (din {total} teste)",
-                                  description=f"PING: **{round(latency_average * 1000, 2)}ms**")
-        return await ctx.channel.send(embed=embed)
+        await ping_func(self.bot, ctx, tests)
 
 
 def setup(bot):
