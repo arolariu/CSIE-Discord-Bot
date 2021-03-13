@@ -135,7 +135,7 @@ class Admin(commands.Cog, name="================================================
             result = " ".join([i for i in args])
             return await ctx.channel.send(result)
         else:
-            return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
+            return await ctx.channel.send("Nu aveti permisiunile necesare.")
 
 
 def setup(bot):

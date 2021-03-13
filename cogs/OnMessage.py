@@ -11,9 +11,6 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.author == self.bot.user:
-            return
-
         # We use a variable to store ctx.content.lower()
         msg = ctx.content.lower()
 

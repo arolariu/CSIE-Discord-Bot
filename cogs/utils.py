@@ -1,4 +1,10 @@
-from funcs import *
+import discord
+
+from discord.ext import commands
+from discord_utils import role_pages
+
+from funcs import UtilsFunc
+from listeners import utils_listener
 
 
 class Utils(commands.Cog, name="================================================\nUtils"):
@@ -75,19 +81,36 @@ class Utils(commands.Cog, name="================================================
     @commands.command(help="Vezi statistici interesante despre server.",
                       description="Comanda $server ofera statistici interesante despre server.\nSINTAXA:")
     async def server(self, ctx):
-        await server_func(self.bot, ctx)
+        return await UtilsFunc(bot=self.bot,
+                               ctx=ctx,
+                               user=None,
+                               amount=None,
+                               context=None).server_func()
 
     # The command $ver provides useful information about the bot to the users.
     @commands.command(help="Vezi informatii suplimentare despre robot.",
                       description="Comanda $ver ofera informatii suplimentare despre robot.\nSINTAXA:")
     async def ver(self, ctx):
-        await ver_func(self.bot, ctx)
+        return await UtilsFunc(bot=self.bot,
+                               ctx=ctx,
+                               user=None,
+                               amount=None,
+                               context=None).ver_func()
 
     # The command $ping shows details about the Bot's Latency.
     @commands.command(help="Vezi latency Bot.",
                       description="Interesat de cifre? Vezi ce latency are botul.")
     async def ping(self, ctx, tests=100):
-        await ping_func(self.bot, ctx, tests)
+        return await UtilsFunc(bot=self.bot,
+                               ctx=ctx,
+                               user=None,
+                               amount=tests,
+                               context=None).ping_func()
+
+    # Listener for the DEBUG $print command
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        return await utils_listener(bot=self.bot, ctx=ctx)
 
 
 def setup(bot):

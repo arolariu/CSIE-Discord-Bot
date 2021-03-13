@@ -7,13 +7,13 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 # VERSION CONTROL:
 ##################
 
-VERSION_DATE = "12/03/2021"
-VERSION_NUMBER = "2.4a"
+VERSION_DATE = "13/03/2021"
+VERSION_NUMBER = "2.4b"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.
 ++ Configuratia interna a fost criptata.
-++ Botul are un latency de 40ms.
+++ Botul are un latency de 45ms.
 ++ Simplificat logica pentru asignarea automata a rolului de an.
 ++ Am adoptat o noua arhitectura pentru bot: Plugins + Modules.
 ++ Actualizarile se pot face on-the-fly.
