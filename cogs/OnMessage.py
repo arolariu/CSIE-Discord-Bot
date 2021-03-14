@@ -36,6 +36,7 @@ class OnMessage(commands.Cog):
                     }
                 await ctx.author.add_roles(
                     get(ctx.guild.roles, name=role_dex[msg[0:-1] if msg[-1] == "!" else msg[1:]]))
+                await ctx.author.remove_roles(get(ctx.guild.roles, name="FĂRĂ ROL"))
                 await ctx.add_reaction(emoji="✔")
             except AttributeError:
                 await ctx.add_reaction(emoji="❌")

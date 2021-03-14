@@ -27,7 +27,7 @@ class Casino(commands.Cog, name="===============================================
             embed = discord.Embed(
                 title=f":exclamation: Deja ai pariat la ruleta, mai asteapta {error.retry_after:.2f} sec :exclamation:",
                 color=0xFF0000)
-            await ctx.channel.send(embed=embed, delete_after=5)
+            return await ctx.channel.send(embed=embed, delete_after=5)
 
     @commands.command(help="Joaca la slots!",
                       description="Pentru a folosi $slots, ai nevoie de o balanta de credite pozitiva!\nSintaxa:")
@@ -46,7 +46,7 @@ class Casino(commands.Cog, name="===============================================
             embed = discord.Embed(
                 title=f":exclamation: Deja ai pariat la slots, mai asteapta {error.retry_after:.2f} sec :exclamation:",
                 color=0xFF0000)
-            await ctx.channel.send(embed=embed, delete_after=5)
+            return await ctx.channel.send(embed=embed, delete_after=5)
 
     # The $balance command shows users their current credit score balance.
     @commands.command(help="Arata cate credite are un utilizator.",
@@ -116,7 +116,7 @@ class Casino(commands.Cog, name="===============================================
             embed = discord.Embed(
                 title=f":exclamation: Nu poti fura instant, mai asteapta {error.retry_after:.2f} secunde :exclamation:",
                 color=0xFF0000)
-            await ctx.channel.send(embed=embed, delete_after=15)
+            return await ctx.channel.send(embed=embed, delete_after=15)
 
     # The $clasament command shows the top 12 users by their credit score balance.
     @commands.command(help="Vezi cei mai bogati 12 oameni de pe server.",
@@ -146,12 +146,13 @@ class Casino(commands.Cog, name="===============================================
             embed = discord.Embed(
                 title=f":exclamation: Comanda daily merge odata la 12h, mai asteapta {(error.retry_after / 60):.2f} minute :exclamation:",
                 color=0xFF0000)
-            await ctx.channel.send(embed=embed, delete_after=30)
+            return await ctx.channel.send(embed=embed, delete_after=30)
 
     # Listener for the DEBUG $print command
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        await casino_listener(bot=self.bot, ctx=ctx)
+        if ctx.message.author == self.bot.user:
+            return await casino_listener(bot=self.bot, ctx=ctx)
 
 
 def setup(bot):

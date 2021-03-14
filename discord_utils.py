@@ -7,8 +7,8 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 # VERSION CONTROL:
 ##################
 
-VERSION_DATE = "13/03/2021"
-VERSION_NUMBER = "2.4b"
+VERSION_DATE = "14/03/2021"
+VERSION_NUMBER = "2.4c"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.
@@ -73,9 +73,9 @@ def server_years(members):
             join_month = int(join_date[5:7])
             if join_year == current_year and join_month >= 6:
                 y1 += 1
-            elif join_year == current_year - 1 or (join_year == current_year and join_month < 6):
+            elif (join_year == current_year - 1 and join_month >= 6) or (join_year == current_year and join_month < 6):
                 y2 += 1
-            elif join_year == current_year - 2:
+            elif (join_year == current_year - 1 and join_month < 6) or (join_year == current_year - 2 and join_month >= 6):
                 y3 += 1
             else:
                 y4 += 1
@@ -268,7 +268,7 @@ role_page_3.add_field(name='Pentru a vă asigna un rol de pe această pagină, a
                       value="‏‏‎ ‎", inline=False)
 role_page_3.add_field(name='1️⃣ <-> DJ', value="Asculti muzica des? Alege acest rol!", inline=False)
 role_page_3.add_field(name='2️⃣ <-> Party', value="Te joci des? Alege acest rol!‎", inline=False)
-role_page_3.add_field(name='3️⃣ <-> Memer', value="‏‏‎ ‎", inline=False)
+role_page_3.add_field(name='3️⃣ <-> Memer', value="Esti un memer? Alege acest rol!", inline=False)
 role_page_3.add_field(name='4️⃣ <-> LOL-ist', value="Te joci LOL? Alege acest rol!", inline=False)
 role_page_3.add_field(name='5️⃣ <-> CSGO-ist', value="Te joci CS:GO? Alege acest rol!", inline=False)
 role_page_3.set_footer(text=f'Ai un rol nou? Contactează un @Moderator (font galben)')

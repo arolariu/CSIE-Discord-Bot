@@ -52,7 +52,8 @@ class General(commands.Cog, name="==============================================
     # Listener for the DEBUG $print command
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        await general_listener(bot=self.bot, ctx=ctx)
+        if ctx.message.author == self.bot.user:
+            return await general_listener(bot=self.bot, ctx=ctx)
 
 
 def setup(bot):

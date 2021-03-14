@@ -62,7 +62,8 @@ class Faculty(commands.Cog, name="==============================================
     # Listener for the DEBUG $print command
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        await facultate_listener(bot=self.bot, ctx=ctx)
+        if ctx.message.author == self.bot.user:
+            return await facultate_listener(bot=self.bot, ctx=ctx)
 
 
 def setup(bot):

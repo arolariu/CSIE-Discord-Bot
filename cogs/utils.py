@@ -110,7 +110,8 @@ class Utils(commands.Cog, name="================================================
     # Listener for the DEBUG $print command
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        return await utils_listener(bot=self.bot, ctx=ctx)
+        if ctx.message.author == self.bot.user:
+            return await utils_listener(bot=self.bot, ctx=ctx)
 
 
 def setup(bot):

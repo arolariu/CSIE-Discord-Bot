@@ -15,7 +15,7 @@ class OnEvents(commands.Cog):
         embed = discord.Embed(title=f"Am primit restart si sunt gata de actiune!",
                               color=0x00FAFA)
         channel = self.bot.get_channel(744632571471855807)
-        await channel.send(embed=embed)
+        return await channel.send(embed=embed)
 
     # If a member gets banned this event will trigger:
     @commands.Cog.listener()
@@ -23,7 +23,7 @@ class OnEvents(commands.Cog):
         embed = discord.Embed(title=f"Membrul {member.name} a fost banat.",
                               color=0xFF0000)
         channel = self.bot.get_channel(703014828733628446)
-        await channel.send(embed=embed)
+        return await channel.send(embed=embed)
 
     # If a member joins the server this event will trigger:
     @commands.Cog.listener()
@@ -56,7 +56,7 @@ class OnEvents(commands.Cog):
         embed = discord.Embed(title=f"Membrul {member.name} a intrat pe server.",
                               color=0xFFFF00)
 
-        await channel.send(embed=embed)
+        return await channel.send(embed=embed)
 
     # If a member leaves the server, this event will trigger:
     @commands.Cog.listener()
@@ -64,7 +64,7 @@ class OnEvents(commands.Cog):
         embed = discord.Embed(title=f"Membrul {member.name} a iesit de pe server.",
                               color=0xFFFF00)
         channel = self.bot.get_channel(703014828733628446)
-        await channel.send(embed=embed)
+        return await channel.send(embed=embed)
 
 
 def setup(bot):

@@ -128,6 +128,16 @@ class Admin(commands.Cog, name="================================================
         else:
             return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
 
+    # The $ev command is used to evaluate a python expression and print the result.
+    @commands.command(help="Executa Cod Python.")
+    async def ev(self, ctx, *args):
+        return
+
+    # The $show command shows internal code from the bot's files to the user.
+    @commands.command(help="Vezi Cod Intern.")
+    async def show(self, ctx, *args):
+        return
+
     # The $print command is used to test different bot functionalities.
     @commands.command(help="Pentru DEBUG comenzi.")
     async def print(self, ctx, *args):
