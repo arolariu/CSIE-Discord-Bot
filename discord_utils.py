@@ -7,8 +7,8 @@ LOGO_GIF = "https://cdn.discordapp.com/attachments/743466478707409037/7449201744
 # VERSION CONTROL:
 ##################
 
-VERSION_DATE = "14/03/2021"
-VERSION_NUMBER = "2.4c"
+VERSION_DATE = "15/04/2021"
+VERSION_NUMBER = "2.5a"
 VERSION_DATA = \
     """
 ++ Toate librariile interne actualizate la ultima versiune.
@@ -19,7 +19,7 @@ VERSION_DATA = \
 ++ Actualizarile se pot face on-the-fly.
 ++ Baza de cod a fost restructurata in proportie de 95%.
 ++ Reparat si simplificat meniul de pe #roles.
-++ Adaugat peste 10 comenzi noi. Vezi $help.
+++ Adaugat peste 20 comenzi noi. Vezi $help.
 ++ Botul este online 24/7 de acum.
     """
 

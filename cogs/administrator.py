@@ -1,6 +1,7 @@
 from discord.ext import commands
 from discord.utils import get
 from discord_utils import *
+import json
 
 
 # Admin Commands Class
@@ -128,16 +129,6 @@ class Admin(commands.Cog, name="================================================
         else:
             return await ctx.channel.send("Doar 중간끝#6826 are acces la aceasta comanda.")
 
-    # The $ev command is used to evaluate a python expression and print the result.
-    @commands.command(help="Executa Cod Python.")
-    async def ev(self, ctx, *args):
-        return
-
-    # The $show command shows internal code from the bot's files to the user.
-    @commands.command(help="Vezi Cod Intern.")
-    async def show(self, ctx, *args):
-        return
-
     # The $print command is used to test different bot functionalities.
     @commands.command(help="Pentru DEBUG comenzi.")
     async def print(self, ctx, *args):
@@ -146,6 +137,46 @@ class Admin(commands.Cog, name="================================================
             return await ctx.channel.send(result)
         else:
             return await ctx.channel.send("Nu aveti permisiunile necesare.")
+
+    # The $warn command is used to warn other users for bad behavior.
+    @commands.command(help="Avertizeaza un utilizator daca a gresit.")
+    async def warn(self, ctx, user=None, *args):
+        if ctx.author.id in power_users:
+            old_user = None
+            if user is not None:
+                try:
+                    old_user = self.bot.get_user(int(user[3:-1]))
+                    if old_user is None:
+                        old_user = self.bot.get_user(int(user[2:-1]))
+                except ValueError:
+                    return await ctx.channel.send("Sigur ai formulat bine comanda?")
+
+            with open("warnings.json", "r") as warns:
+                data = json.load(warns)
+
+            # We get the current date for the new warn:
+            date = datetime.datetime.now()
+            result = str(date.year) + "-" + str(date.month) + "-" + str(date.day) + \
+                " |TZ| " + str(date.hour) + ":" + str(date.minute) + ":" + str(date.second)
+
+            try:
+                data[str(old_user)]["Reasons"] += [" ".join(args)]
+                data[str(old_user)]["Date(s) warned on:"] += [result]
+            except KeyError:
+                data[str(old_user)] = {"Reasons": [" ".join(args)]}
+                data[str(old_user)].update({"Date(s) warned on:": [result]})
+
+            with open("warnings.json", "w") as warns:
+                json.dump(data, warns, indent=2)
+
+            embed = discord.Embed(color=0XFFFF00,
+                                  title=":warning: AVERTISMENT :warning:",
+                                  description=f"{old_user} a fost avertizat din cauza ca: \n{' '.join(args)}",
+                                  timestamp=datetime.datetime.utcnow())
+            embed.set_footer(text=f"Nr. total de warnings: {len(data[str(old_user)]['Reasons'])}")
+            return await ctx.channel.send(embed=embed)
+        else:
+            return await ctx.channel.send("Nu ai destule drepturi pentru a accesa aceasta comanda.")
 
 
 def setup(bot):
