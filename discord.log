@@ -1,9 +1,0 @@
-2021-04-15 13:18:07,468:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
-2021-04-15 13:18:07,629:INFO:discord.client: logging in using static token
-2021-04-15 13:18:08,096:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
-2021-04-15 13:18:08,285:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-h7lf",{"micros":51152,"calls":["discord-sessions-prd-2-24",{"micros":48857,"calls":["start_session",{"micros":30006,"calls":["api-prd-main-mzj4",{"micros":26413,"calls":["get_user",{"micros":2812},"add_authorized_ip",{"micros":1534},"get_guilds",{"micros":4071},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":72,"calls":[]}]}]}] (Session ID: d1bbe708c54157c784c8870af2be1740).
-2021-04-15 13:26:48,803:INFO:discord.gateway: Websocket closed with 4003, attempting a reconnect.
-2021-04-15 13:26:48,803:INFO:discord.client: Got a request to RESUME the websocket.
-2021-04-15 13:26:49,092:INFO:discord.gateway: Shard ID None has sent the RESUME payload.
-2021-04-15 13:26:49,223:INFO:discord.gateway: Shard ID None session has been invalidated.
-2021-04-15 13:26:49,355:INFO:discord.client: Got a request to IDENTIFY the websocket.
