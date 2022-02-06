@@ -24,7 +24,10 @@ client.on("ready", async () => {
     typeScript: true,
     showWarns: true,
     debug: true,
-  }).setDefaultPrefix("$");
+  })
+    .setColor("#ff0000")
+    .setDisplayName("Help menu")
+    .setDefaultPrefix("$");
 });
 
 client.login(process.env.DISCORD_TOKEN);
