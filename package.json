@@ -1,0 +1,29 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for the discord server \"CSIE++\" which holds over 1.000 computer science students from the universities @ Bucharest.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.ts"
+  },
+  "keywords": [
+    "typescript",
+    "discord",
+    "university",
+    "education"
+  ],
+  "author": "OLARIU R. ALEXANDRU-RAZVAN",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "mongoose": "^6.2.0",
+    "nodemon": "^2.0.15",
+    "pretty-bytes": "^5.6.0",
+    "pretty-ms": "^7.0.1",
+    "wokcommands": "^1.5.3"
+  }
+}

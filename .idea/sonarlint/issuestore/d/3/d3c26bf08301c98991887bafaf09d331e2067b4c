@@ -1,16 +1,0 @@
-
-B
-java:S1612?",Replace this lambda with a method reference.(­„ı
-o
-java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(åÜÆƒûÿÿÿÿ
-i
-java:S1128	"TRemove this unnecessary import: same package classes are always implicitly imported.(Ş’òV
-j
-java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(”êÛ€
-o
-java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(’ÈåŸüÿÿÿÿ
-b	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(·š†‡
-b
-java:S1223!"LRename this method to prevent any misunderstanding or make it a constructor.(Çµí‘
-_
-java:S2259H"DA "NullPointerException" could be thrown; "client" is nullable here.(é÷éüşÿÿÿÿ
