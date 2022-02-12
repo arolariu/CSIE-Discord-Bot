@@ -1,3 +1,10 @@
+
+
+# Remove the .env file so we don't accidentally push it live.
 .env
+
+# Remove the node_modules directory so we don't accidentally push 300+ MBs live (haha!).
 node_modules
-/data/*
+
+# Remove PII data from the data folder in order to respect the privacy of our users.
+/data/users.json

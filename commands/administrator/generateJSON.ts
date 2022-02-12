@@ -53,6 +53,16 @@ export default {
         value: `${timeAfterWritingFile - timeAfterGeneratingJSON} ms`,
         inline: false,
       },
+      {
+        name: "Timp total:",
+        value: `${timeAfterWritingFile - timeUntilFetchUsers} ms`,
+        inline: false,
+      },
+      {
+        name: "Dimensiune fisier .JSON:",
+        value: `${JSONFile.length} bytes`,
+        inline: false,
+      },
     ];
 
     const embedFooter = {

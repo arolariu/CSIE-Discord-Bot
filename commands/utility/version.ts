@@ -12,7 +12,7 @@ export default {
   cooldown: "10s",
   callback: () => {
     // store the changelog.json file in a variable
-    const changelog = require("../../changelog.json");
+    const changelog = require("../../data/changelog.json");
     // store the latest version in a variable
     const latest = changelog[0];
 

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Celestial",
+    "version": "4.1.1",
+    "release": "2022-02-12",
+    "description": "Celestial reprezintă noua versiune a botului, făcută în întregime în limbajul TypeScript.",
+    "author": "OLARIU ALEXANDRU-RAZVAN",
+    "changes": ["- [#1] Optimizări minore la funcțiile de ajutor."]
+  },
+  {
+    "name": "Celestial",
+    "version": "4.1.0a",
+    "release": "2022-02-12",
+    "description": "Celestial reprezintă noua versiune a botului, 4.0.0, făcută în întregime în limbajul TypeScript.",
+    "author": "OLARIU ALEXANDRU-RAZVAN",
+    "changes": [
+      "- [#1] Adăugat interfața și modelul pentru un User.",
+      "- [#2] Optimizări minore la funcțiile de ajutor.",
+      "- [#3] Adăugat trei noi funcții de ajutor:",
+      "  - [x] `getGuildMembersFromGuild(guild: Guild) : Array[]`: Returnează un vector de membrii.",
+      "  - [x] `getUserFromGuildMember(member: GuildMember) : User`: Returnează un obiect de tip „User” de la „GuildMember”.",
+      "  - [x] `createJSONforGuildMember(member: GuildMember) : {User}`: Creează un obiect JSON pentru un GuildMember."
+    ]
+  },
+  {
+    "name": "Celestial",
+    "version": "4.0.0a",
+    "release": "2022-02-06",
+    "description": "Celestial reprezintă noua versiune a botului, 4.0.0alpha, făcută în întregime în limbajul TypeScript.",
+    "author": "OLARIU ALEXANDRU-RAZVAN",
+    "changes": [
+      "- [#1] Convertit botul în limbajul TypeScript.",
+      "- [#2] Convertit 50% din comenzi în slash comamnds (cu /).",
+      "- [#3] Actualizat meniul de ajutor (/help).",
+      "- [#4] Conectat botul la o bază de date de la distanță."
+    ]
+  }
+]

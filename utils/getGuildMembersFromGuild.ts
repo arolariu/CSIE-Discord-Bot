@@ -1,6 +1,8 @@
 import { Collection, Guild, GuildMember, GuildMemberManager } from "discord.js";
 
-export default async function getGuildMembersFromGuild(guild: Guild) {
+export default async function getGuildMembersFromGuild(
+  guild: Guild
+): Promise<GuildMember[]> {
   const guildMembersManager: GuildMemberManager = guild.members;
 
   if (guildMembersManager === undefined || !guildMembersManager)

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  _id: {
+  id: {
     type: Number,
     required: true,
     unique: true,
@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    required: true,
+    default: "https://cdn.discordapp.com/embed/avatars/1.png",
   },
   createdAt: {
     type: Date,
