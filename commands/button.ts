@@ -5,7 +5,6 @@ export default {
   category: "Utility",
   description: "Materiale pentru facultate.",
   name: "materiale",
-
   slash: "both",
   testOnly: true,
 

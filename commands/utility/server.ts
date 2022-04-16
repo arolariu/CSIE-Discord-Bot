@@ -3,13 +3,11 @@ import { ICommand } from "wokcommands";
 
 export default {
   category: "Utility",
-  description: "Vizualizează informații despre server.",
+  description: "View general information about the server.",
   name: "server",
-
   slash: "both",
   testOnly: true,
   guildOnly: true,
-
   cooldown: "10s",
   callback: async ({ guild }) => {
     const GUILD: Guild = await guild!.fetch();
@@ -17,73 +15,63 @@ export default {
 
     const embedFields = [
       {
-        name: "Descriere server:",
-        value: GUILD.description || "Nu există descriere.",
+        name: "Server description:",
+        value: GUILD.description || "No description provided.",
         inline: false,
       },
       {
-        name: "Server înființat la data de:",
-        value: GUILD.createdAt!.toLocaleString() || "N/A",
-        inline: false,
-      },
-      {
-        name: "Nr. total de membri:",
-        value:
-          GUILD.memberCount!.toString() ||
-          "Nu am putut obține numărul de membri.",
+        name: "Server owner:",
+        value: OWNER.user.tag,
         inline: true,
       },
       {
-        name: "Nr. maxim de membri:",
-        value:
-          GUILD.maximumMembers!.toString() ||
-          "Nu am putut obține numărul maxim de membri.",
+        name: "Server created on:",
+        value: GUILD.createdAt.toLocaleDateString(),
+        inline: false,
+      },
+      {
+        name: "Server ID:",
+        value: GUILD.id,
+        inline: false,
+      },
+      {
+        name: "Owner ID:",
+        value: OWNER.id,
+        inline: false,
+      },
+      {
+        name: "Current member count:",
+        value: GUILD.memberCount.toString(),
         inline: true,
       },
       {
-        name: "Performanță canale voce:",
-        value:
-          GUILD.maximumBitrate === 12800
-            ? "12.8 Kbps"
-            : "N/A" || "Nu am putut obține performanța canalelor de voce.",
+        name: "Maximum server capacity:",
+        value: GUILD.maximumMembers!.toString(),
+        inline: true,
+      },
+      {
+        name: "Rules channel:",
+        value: GUILD.rulesChannel?.toString() || "N/A",
         inline: false,
       },
       {
-        name: "Nr. server boosts:",
-        value: GUILD.premiumSubscriptionCount!.toString() || "0",
-        inline: false,
-      },
-      {
-        name: "Nivel server boost:",
-        value: GUILD.premiumTier || "N/A",
-        inline: false,
-      },
-      {
-        name: "Canalul de reguli:",
-        value: GUILD.rulesChannel
-          ? GUILD.rulesChannel!.toString() || "N/A"
-          : "Nu există.",
-        inline: false,
-      },
-      {
-        name: "Administrator principal server:",
-        value:
-          OWNER.displayName + "#" + OWNER.user.discriminator || "Nu există.",
-        inline: false,
+        name: "Starting channel:",
+        value: GUILD.systemChannel?.toString() || "N/A",
+        inline: true,
       },
     ];
     const embedFooter = {
       text: `${GUILD.name} - Copyright © 2022 - ${OWNER.displayName}#${OWNER.user.discriminator}`,
-      icon_url: GUILD.iconURL(),
+      icon_url: GUILD.iconURL() ?? process.env.EMBED_ICON!,
     };
 
-    const embed = new MessageEmbed()
-      .setColor(0x00ae86)
-      .setTitle(`Informații despre ${GUILD.name}`)
+    return new MessageEmbed()
+      .setColor("AQUA")
+      .setTitle(`General information about the ${GUILD.name} discord server.`)
+      .setThumbnail(GUILD.iconURL() ?? process.env.EMBED_ICON!)
+      .setImage(GUILD.iconURL() ?? process.env.EMBED_ICON!)
       .addFields(embedFields)
       .setFooter(embedFooter)
       .setTimestamp();
-
-    return embed;
   },
 } as ICommand;

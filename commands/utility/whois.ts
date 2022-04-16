@@ -3,14 +3,13 @@ import { ICommand } from "wokcommands";
 import getGuildMemberFromUID from "../../utils/getGuildMemberFromUID";
 import getPresenceStatusFromGuildMember from "../../utils/getPresenceStatusFromGuildMember";
 import filterRolesBasedOnCategory from "../../utils/helpers/filterRolesBasedOnCategory";
-import getRolesExceptEveryoneFromGuildMember from "../../utils/getRolesExceptEveryoneFromGuildMember";
+import getRolesFromGuildMember from "../../utils/getRolesFromGuildMember";
 import sanitizeUID from "../../utils/helpers/sanitizeUID";
 
 export default {
   category: "Utility",
   name: "whois",
   description: "Do a whois search on a specific user.",
-
   slash: "both",
   testOnly: true,
   guildOnly: true,
@@ -18,120 +17,106 @@ export default {
   maxArgs: 1,
   expectedArgs: "<user>",
 
-  callback: ({ args, guild }) => {
-    const taggedUser: GuildMember = getGuildMemberFromUID(
+  callback: async ({ args, guild }) => {
+    const guildMember: GuildMember = await getGuildMemberFromUID(
       sanitizeUID(args[0]!),
       guild!
-    )!;
-    const taggedUserRoles: Role[] =
-      getRolesExceptEveryoneFromGuildMember(taggedUser);
+    );
+    const user: User = guildMember.user;
+
+    const guildMemberRoles: Role[] = getRolesFromGuildMember(guildMember);
 
     const embedFields = [
       {
-        name: "Nume de utilizator:",
-        value: taggedUser.displayName || "Nu s-a putut afla username-ul.",
+        name: "User display name:",
+        value: guildMember.displayName,
         inline: true,
       },
       {
-        name: "Discriminator (tag):",
-        value:
-          taggedUser.user!.discriminator ||
-          "Nu s-a putut afla discriminatorul.",
-        inline: true,
-      },
-      {
-        name: "UID:",
-        value: taggedUser.id || "Nu s-a putut afla ID-ul.",
+        name: "UID (User ID):",
+        value: guildMember.id,
         inline: false,
       },
       {
-        name: "Status utilizator:",
-        value:
-          getPresenceStatusFromGuildMember(taggedUser) ||
-          "Nu s-a putut afla statutul pe server.",
+        name: "User identifier",
+        value: user.tag,
         inline: true,
       },
       {
-        name: "URL poză de profil:",
-        value:
-          taggedUser.user!.displayAvatarURL({ format: "png", size: 2048 }) ||
-          "Nu s-a putut afla imaginea.",
+        name: "User status:",
+        value: getPresenceStatusFromGuildMember(guildMember),
+        inline: true,
+      },
+      {
+        name: "Communication disabled:",
+        value: guildMember.communicationDisabledUntil
+          ? guildMember.communicationDisabledUntil.toLocaleDateString()
+          : "No.",
+        inline: true,
+      },
+      {
+        name: "Avatar URL:",
+        value: user.displayAvatarURL({ format: "png", size: 2048 }),
         inline: false,
       },
       {
-        name: "Anul de studiu:",
+        name: "Joined discord on:",
+        value: user.createdAt.toLocaleString(),
+        inline: false,
+      },
+      {
+        name: "Joined this server on :",
+        value: guildMember.joinedAt!.toLocaleString(),
+        inline: false,
+      },
+      {
+        name: "Study Year:",
         value:
-          filterRolesBasedOnCategory(taggedUserRoles, "Year")
+          filterRolesBasedOnCategory(guildMemberRoles, "Year")
             .map((role) => role.name)
-            .join(".") || "Nu s-a putut afla anul de studiu.",
+            .join(".") || "None.",
         inline: true,
       },
       {
-        name: "Specializare:",
+        name: "Study plan:",
         value:
-          filterRolesBasedOnCategory(taggedUserRoles, "University")
+          filterRolesBasedOnCategory(guildMemberRoles, "University")
             .map((role) => role.name)
-            .join(".") || "Nu s-a putut afla specializarea.",
+            .join(".") || "None.",
         inline: true,
       },
       {
-        name: "Tehnologii cunoscute:",
+        name: "Known technologies:",
         value:
-          filterRolesBasedOnCategory(taggedUserRoles, "Tech")
+          filterRolesBasedOnCategory(guildMemberRoles, "Tech")
             .map((role) => role.name)
-            .join(", ") || "Nu s-au putut afla tehnologiile cunoscute.",
+            .join(", ") || "None.",
         inline: false,
       },
       {
-        name:
-          "Domenii de care este interesat(ă) " + taggedUser.displayName + ":",
+        name: "Wants to know more about:",
         value:
-          filterRolesBasedOnCategory(taggedUserRoles, "Career Path")
+          filterRolesBasedOnCategory(guildMemberRoles, "Career Path")
             .map((role) => role.name)
-            .join(", ") ||
-          "Nu s-au putut afla domeniile de care este interesat(ă).",
-        inline: false,
-      },
-      {
-        name: "S-a alăturat pe discord în data de:",
-        value:
-          taggedUser.user!.createdAt.toLocaleString() ||
-          "Nu s-a putut afla data de la care s-a alăturat pe discord.",
-        inline: false,
-      },
-      {
-        name: "S-a alăturat pe server în data de:",
-        value:
-          taggedUser.joinedAt!.toLocaleString() ||
-          "Nu s-a putut afla data de la care s-a alăturat pe server.",
+            .join(", ") || "None.",
         inline: false,
       },
     ];
 
     const embedFooter = {
-      text: `whois rulat pentru ${taggedUser.displayName}#${
-        taggedUser.user!.discriminator
-      }`,
-      icon_url: taggedUser.user!.avatarURL({ format: "png", dynamic: true }),
+      text: `whois executed for ${guildMember.displayName}#${user.discriminator}`,
+      icon_url: user.avatarURL({ format: "png", dynamic: true }),
     };
 
-    const embed = new MessageEmbed()
-      .setColor("#0099ff")
+    return new MessageEmbed()
+      .setColor("BLUE")
       .setTitle(
-        `Whois pentru membrul ${taggedUser.displayName}#${
-          taggedUser.user!.discriminator
-        }`
+        `Whois executed for ${guildMember.displayName}#${user.discriminator}`
       )
       .addFields(embedFields)
       .setFooter(embedFooter)
-      .setImage(
-        taggedUser.user!.displayAvatarURL({ format: "png", dynamic: true })
-      )
-      .setThumbnail(
-        taggedUser.user!.displayAvatarURL({ format: "png", dynamic: true })
-      )
+      .setImage(user.displayAvatarURL({ format: "png", dynamic: true }))
+      .setThumbnail(user.displayAvatarURL({ format: "png", dynamic: true }))
       .setTimestamp();
-
-    return embed;
   },
 } as ICommand;

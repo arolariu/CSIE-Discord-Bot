@@ -7,9 +7,9 @@ export default function getPresenceStatusFromGuildMember(
   if (!presence) return "offline";
 
   const status = presence.status;
-  if (status === "online") return "online";
-  if (status === "idle") return "idle";
-  if (status === "dnd") return "dnd";
+  if (status === "online") return "Online";
+  if (status === "idle") return "Idle";
+  if (status === "dnd") return "Do not disturb";
 
-  return "offline";
+  return "Offline (or invisible)";
 }

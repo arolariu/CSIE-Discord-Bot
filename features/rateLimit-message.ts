@@ -3,7 +3,7 @@ import WOKCommands from "wokcommands";
 
 export default (client: Client, instance: WOKCommands) => {
   client.on("rateLimit", (info) => {
-    const { timeout, limit, method, path, route, global } = info;
+    const { /* timeout, limit, */ method, path, route, global } = info;
 
     // if the rate limit is global, the rate limit is for the entire bot
     if (global) {

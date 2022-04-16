@@ -1,83 +1,90 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { ICommand } from "wokcommands";
-import User from "../../interfaces/User.interface";
+import IUser from "../../interfaces/User.interface";
 import getGuildMembersFromGuild from "../../utils/getGuildMembersFromGuild";
-import createJSONforGuildMember from "../../utils/helpers/createJSONforGuildMember";
+import getIUserFromGuildMember from "../../utils/getIUserfromGuildMember";
 import fs from "fs";
 
 export default {
   category: "Administrator",
-  description: "Generate JSON file with every user's info.",
+  description: "Generate JSON file with every user's information.",
   name: "generateJSON",
-  slash: false,
+  slash: "both",
   testOnly: true,
   guildOnly: true,
   permissions: ["ADMINISTRATOR"],
   minArgs: 1,
   maxArgs: 1,
-  expectedArgs: "<channel id>",
+  expectedArgs: "<Guild ID>",
 
-  callback: async ({ message, client, args }) => {
+  callback: async ({ client, args }) => {
     if (args[0].length < 1 || typeof args[0] !== "string")
-      return "Please provide a channel id.";
+      return "Please provide a valid Guild ID.";
 
+    // 0. Find  the guild from the args[0].
     const guild = client.guilds.cache.get(args[0]);
-    if (!guild) return "Could not find guild.";
+    if (!guild) return `Could not find the specified Guild ID: ${args[0]}`;
 
+    // 1. Fetching the users from the guild.
     const timeUntilFetchUsers = Date.now();
     const guildMembers: GuildMember[] = await getGuildMembersFromGuild(guild);
     const timeAfterFetchUsers = Date.now();
 
-    let JSONArray: User[] = [];
+    // 2. Adding the users to a JSON array object.
+    let JSONArray: IUser[] = [];
     guildMembers.forEach((user) =>
-      JSONArray.push(createJSONforGuildMember(user))
+      JSONArray.push(getIUserFromGuildMember(user))
     );
     const timeAfterGeneratingJSON = Date.now();
+
+    // 3. Writing the JSON array to a file.
     const JSONFile = JSON.stringify(JSONArray);
     fs.writeFileSync(`./data/users.json`, JSONFile);
     const timeAfterWritingFile = Date.now();
 
+    // 4. Sending a message to the channel.
     const embedFields = [
       {
-        name: "Timp de asteptare pentru a descarca utilizatorii:",
-        value: `${timeAfterFetchUsers - timeUntilFetchUsers} ms`,
+        name: "Elapsed time for adding users:",
+        value: `${timeAfterFetchUsers - timeUntilFetchUsers} ms.`,
         inline: false,
       },
       {
-        name: "Timp de asteptare pentru a genera JSON:",
-        value: `${timeAfterGeneratingJSON - timeAfterFetchUsers} ms`,
+        name: "Elapsed time for generating JSON:",
+        value: `${timeAfterGeneratingJSON - timeAfterFetchUsers} ms.`,
         inline: false,
       },
       {
-        name: "Timp de asteptare pentru a scrie fisierul:",
-        value: `${timeAfterWritingFile - timeAfterGeneratingJSON} ms`,
+        name: "Elapsed time for writing JSON file:",
+        value: `${timeAfterWritingFile - timeAfterGeneratingJSON} ms.`,
         inline: false,
       },
       {
-        name: "Timp total:",
-        value: `${timeAfterWritingFile - timeUntilFetchUsers} ms`,
+        name: "⌛ Total execution time:",
+        value: `${timeAfterWritingFile - timeUntilFetchUsers} ms.`,
         inline: false,
       },
       {
-        name: "Dimensiune fisier .JSON:",
-        value: `${JSONFile.length} bytes`,
+        name: "💾 JSON file size:",
+        value: `${JSONFile.length} bytes. - ${(
+          JSONFile.length / 1024
+        ).toFixed()} KB.`,
         inline: false,
       },
     ];
 
     const embedFooter = {
-      text: `${JSONArray.length} utilizatori au fost găsiți.`,
+      text: `${JSONArray.length} users have been found.`,
       icon_url: client.user!.avatarURL(),
     };
 
-    const embed = new MessageEmbed()
+    return new MessageEmbed()
       .setColor("#0099ff")
       .setTitle(
-        `Generated JSON file for ${guild.name} (${guildMembers.length} users)`
+        `Generated JSON file for ${guild.name}. (${guildMembers.length} total users)`
       )
       .addFields(embedFields)
       .setFooter(embedFooter)
       .setTimestamp();
-    return embed;
   },
 } as ICommand;

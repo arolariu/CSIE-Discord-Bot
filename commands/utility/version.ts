@@ -3,45 +3,41 @@ import { ICommand } from "wokcommands";
 
 export default {
   category: "Utility",
-  description: "Vizualizează informații despre versiunea botului.",
+  description: "View general information about the bot.",
   name: "version",
-
   slash: "both",
   testOnly: true,
-
   cooldown: "10s",
   callback: () => {
-    // store the changelog.json file in a variable
     const changelog = require("../../data/changelog.json");
-    // store the latest version in a variable
     const latest = changelog[0];
 
     const embedFields = [
       {
-        name: "Nume release:",
+        name: "Release name:",
         value: latest.name + " (" + latest.version + ")",
         inline: true,
       },
       {
-        name: "Versiune:",
+        name: "Release version:",
         value:
           latest.version || "Nu există o versiune în fișierul changelog.json.",
         inline: true,
       },
       {
-        name: "Data:",
+        name: "Release date:",
         value: latest.release || "Nu exista o dată în fișierul changelog.json.",
         inline: true,
       },
       {
-        name: "Descriere:",
+        name: "Release description:",
         value:
           latest.description ||
           "Nu există o descriere în fișierul changelog.json.",
         inline: false,
       },
       {
-        name: "Lista modificari:",
+        name: "Changelog:",
         value: latest.changes?.join("\n") || "Minor bugfixes.",
         inline: false,
       },
@@ -52,17 +48,13 @@ export default {
       icon_url: "",
     };
 
-    const embed = new MessageEmbed()
+    return new MessageEmbed()
       .setColor("RED")
       .setTitle("중간끝 ( B O T )")
-      .setDescription("Informatii generale bot de discord:")
+      .setDescription("General information about the bot:")
       .addFields(embedFields)
-      .setImage(
-        "https://cdn.discordapp.com/attachments/743466478707409037/744920174477443112/wat.gif"
-      )
-      .setTimestamp()
-      .setFooter(embedFooterData);
-
-    return embed;
+      .setImage(process.env.EMBED_ICON!)
+      .setFooter(embedFooterData)
+      .setTimestamp();
   },
 } as ICommand;

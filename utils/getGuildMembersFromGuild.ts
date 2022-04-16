@@ -7,14 +7,16 @@ export default async function getGuildMembersFromGuild(
 
   if (guildMembersManager === undefined || !guildMembersManager)
     throw new Error(
-      `Could not find Guild Member Manager for Guild ${guild.name}.`
+      `Could not find the Guild Member Manager for Guild ${guild.name}.`
     );
 
   const guildMembersCollection: Collection<string, GuildMember> =
     await guildMembersManager.fetch();
 
   if (guildMembersCollection === undefined || !guildMembersCollection)
-    throw new Error(`Could not find Guild Members for Guild ${guild.name}.`);
+    throw new Error(
+      `Could not find the Guild Members for Guild ${guild.name}.`
+    );
 
   let guildMembers: GuildMember[] = [];
   for (let i = 0; i < guildMembersCollection.size; i++) {

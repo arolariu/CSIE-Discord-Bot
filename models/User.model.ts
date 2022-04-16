@@ -7,13 +7,13 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     primaryKey: true,
   },
-  name: {
+  username: {
     type: String,
     required: true,
   },
-  discriminator: {
+  discordTAG: {
     type: String,
-    required: true,
+    default: "NA",
   },
   avatar: {
     type: String,
@@ -41,4 +41,4 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Users", UserSchema);
+export default mongoose.model("Licenta-Users", UserSchema);
