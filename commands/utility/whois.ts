@@ -10,7 +10,7 @@ export default {
   category: "Utility",
   name: "whois",
   description: "Do a whois search on a specific user.",
-  slash: "both",
+  slash: true,
   testOnly: true,
   guildOnly: true,
   minArgs: 1,

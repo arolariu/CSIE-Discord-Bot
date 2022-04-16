@@ -6,15 +6,23 @@ export default {
   category: "Administrator",
   description: "Add and/or refresh the users in the MongoDB database.",
   name: "AddToDB",
-  slash: "both",
+  slash: true,
   testOnly: true,
   guildOnly: true,
   permissions: ["ADMINISTRATOR"],
   cooldown: "5m",
-
-  callback: async () => {
+  maxArgs: 1,
+  expectedArgs: "<path to the users json>",
+  expectedArgsTypes: ["STRING"],
+  callback: async ({ args }) => {
+    const path = args.shift() ?? "../../data/users.json";
     // 0. Fetch the user's JSON file.
-    const userDATA: IUser[] = require("../../data/users.json");
+    let userDATA: IUser[] = [];
+    try {
+      userDATA = require(path);
+    } catch (e) {
+      return `Failed to fetch the users.json file.${e}`;
+    }
 
     // 1. For each user in the JSON file, add them to the database.
     const startTime = Date.now();

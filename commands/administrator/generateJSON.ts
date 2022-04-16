@@ -1,29 +1,25 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { Guild, GuildMember, MessageEmbed } from "discord.js";
 import { ICommand } from "wokcommands";
 import IUser from "../../interfaces/User.interface";
 import getGuildMembersFromGuild from "../../utils/getGuildMembersFromGuild";
-import getIUserFromGuildMember from "../../utils/getIUserfromGuildMember";
+import getIUserFromGuildMember from "../../utils/getIUserFromGuildMember";
 import fs from "fs";
 
 export default {
   category: "Administrator",
   description: "Generate JSON file with every user's information.",
   name: "generateJSON",
-  slash: "both",
+  slash: true,
   testOnly: true,
   guildOnly: true,
   permissions: ["ADMINISTRATOR"],
-  minArgs: 1,
   maxArgs: 1,
-  expectedArgs: "<Guild ID>",
+  expectedArgs: "<path to the users json>",
+  expectedArgsTypes: ["STRING"],
 
-  callback: async ({ client, args }) => {
-    if (args[0].length < 1 || typeof args[0] !== "string")
-      return "Please provide a valid Guild ID.";
-
-    // 0. Find  the guild from the args[0].
-    const guild = client.guilds.cache.get(args[0]);
-    if (!guild) return `Could not find the specified Guild ID: ${args[0]}`;
+  callback: async ({ interaction, client, args }) => {
+    const guild: Guild = interaction.guild!;
+    const path = args.shift() ?? "./data/users.json";
 
     // 1. Fetching the users from the guild.
     const timeUntilFetchUsers = Date.now();
@@ -39,7 +35,7 @@ export default {
 
     // 3. Writing the JSON array to a file.
     const JSONFile = JSON.stringify(JSONArray);
-    fs.writeFileSync(`./data/users.json`, JSONFile);
+    fs.writeFileSync(path, JSONFile);
     const timeAfterWritingFile = Date.now();
 
     // 4. Sending a message to the channel.

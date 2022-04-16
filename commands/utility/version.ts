@@ -5,7 +5,7 @@ export default {
   category: "Utility",
   description: "View general information about the bot.",
   name: "version",
-  slash: "both",
+  slash: true,
   testOnly: true,
   cooldown: "10s",
   callback: () => {

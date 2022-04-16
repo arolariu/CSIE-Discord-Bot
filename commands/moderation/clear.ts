@@ -5,21 +5,17 @@ export default {
   name: "clear",
   description: "Clear messages from a channel inside of a guild.",
   permissions: ["MANAGE_MESSAGES"],
-  slash: "both",
+  slash: true,
   testOnly: true,
   guildOnly: true,
   maxArgs: 1,
   expectedArgs: "<amount of messages to be deleted>",
-
-  callback: async ({ message, interaction, channel, args }) => {
+  expectedArgsTypes: ["NUMBER"],
+  callback: async ({ channel, args }) => {
     const amount = args.length ? parseInt(args.shift()!) : 5;
-
-    if (message) await message.delete();
-
-    // Bulk delete the messages:
-    const { size } = await channel.bulkDelete(amount, true);
-
-    const reply = `Successfully deleted ${size} message(s).`;
-    return interaction ? reply : channel.send(reply);
+    const messages = await channel.messages.fetch({ limit: amount });
+    const { size } = messages;
+    messages.forEach((msg) => msg.delete());
+    return `Successfully deleted ${size} message(s).`;
   },
 } as ICommand;

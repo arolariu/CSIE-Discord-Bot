@@ -26,8 +26,8 @@ export const intents: number[] = [
 export const WOKOptions: Options = {
   testServers: [process.env.DISCORD_GUILD_ID || ""],
   botOwners: [process.env.DISCORD_BOT_OWNER_ID || ""],
-  featureDir: path.join(__dirname, "features"),
-  commandDir: path.join(__dirname, "commands"),
+  featuresDir: path.join(__dirname, "features"),
+  commandsDir: path.join(__dirname, "commands"),
   mongoUri: process.env.MONGO_URI || "",
   dbOptions: { keepAlive: true },
   typeScript: true,

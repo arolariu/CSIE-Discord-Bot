@@ -6,7 +6,7 @@ export default {
   description:
     "This command will return the connectivity information of the bot.",
   name: "ping",
-  slash: "both",
+  slash: true,
   testOnly: true,
   cooldown: "10s",
   callback: ({ client }) => {

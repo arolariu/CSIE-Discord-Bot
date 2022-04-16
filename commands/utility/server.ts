@@ -5,7 +5,7 @@ export default {
   category: "Utility",
   description: "View general information about the server.",
   name: "server",
-  slash: "both",
+  slash: true,
   testOnly: true,
   guildOnly: true,
   cooldown: "10s",
