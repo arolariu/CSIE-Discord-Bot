@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedField, EmbedFooterData, MessageEmbed } from "discord.js";
 import { ICommand } from "wokcommands";
 
 export default {
@@ -12,7 +12,7 @@ export default {
     const changelog = require("../../data/changelog.json");
     const latest = changelog[0];
 
-    const embedFields = [
+    const embedFields: EmbedField[] = [
       {
         name: "Release name:",
         value: latest.name + " (" + latest.version + ")",
@@ -43,9 +43,9 @@ export default {
       },
     ];
 
-    const embedFooterData = {
-      text: "Copyright 2022 (©) - arolariu.ro",
-      icon_url: "",
+    const embedFooterData: EmbedFooterData = {
+      text: process.env.EMBED_TEXT!,
+      iconURL: process.env.EMBED_ICON,
     };
 
     return new MessageEmbed()

@@ -1,10 +1,15 @@
-import { GuildMember, MessageEmbed, Role, User } from "discord.js";
+import {
+  Collection,
+  EmbedField,
+  EmbedFooterData,
+  GuildMember,
+  ImageURLOptions,
+  MessageEmbed,
+  Role,
+  User,
+} from "discord.js";
 import { ICommand } from "wokcommands";
-import getGuildMemberFromUID from "../../utils/getGuildMemberFromUID";
-import getPresenceStatusFromGuildMember from "../../utils/getPresenceStatusFromGuildMember";
-import filterRolesBasedOnCategory from "../../utils/helpers/filterRolesBasedOnCategory";
-import getRolesFromGuildMember from "../../utils/getRolesFromGuildMember";
-import sanitizeUID from "../../utils/helpers/sanitizeUID";
+import filterRolesBasedOnCategory from "../../utils/filterRolesBasedOnCategory";
 
 export default {
   category: "Utility",
@@ -16,17 +21,14 @@ export default {
   minArgs: 1,
   maxArgs: 1,
   expectedArgs: "<user>",
+  expectedArgsTypes: ["USER"],
 
-  callback: async ({ args, guild }) => {
-    const guildMember: GuildMember = await getGuildMemberFromUID(
-      sanitizeUID(args[0]!),
-      guild!
-    );
+  callback: async ({ interaction }) => {
+    const guildMember = interaction.options.getMember("user") as GuildMember;
+    const guildMemberRoles: Collection<string, Role> = guildMember.roles.cache;
     const user: User = guildMember.user;
 
-    const guildMemberRoles: Role[] = getRolesFromGuildMember(guildMember);
-
-    const embedFields = [
+    const embedFields: EmbedField[] = [
       {
         name: "User display name:",
         value: guildMember.displayName,
@@ -44,14 +46,7 @@ export default {
       },
       {
         name: "User status:",
-        value: getPresenceStatusFromGuildMember(guildMember),
-        inline: true,
-      },
-      {
-        name: "Communication disabled:",
-        value: guildMember.communicationDisabledUntil
-          ? guildMember.communicationDisabledUntil.toLocaleDateString()
-          : "No.",
+        value: guildMember.presence?.status || "Offline",
         inline: true,
       },
       {
@@ -103,9 +98,15 @@ export default {
       },
     ];
 
-    const embedFooter = {
-      text: `whois executed for ${guildMember.displayName}#${user.discriminator}`,
-      icon_url: user.avatarURL({ format: "png", dynamic: true }),
+    const embedFooter: EmbedFooterData = {
+      text: `whois executed by ${interaction.member?.user.username}#${interaction.member?.user.discriminator}`,
+      iconURL: user.avatarURL({ format: "png", dynamic: true }) || "",
+    };
+
+    const embedImage: ImageURLOptions = {
+      format: "png",
+      dynamic: true,
+      size: 4096,
     };
 
     return new MessageEmbed()
@@ -115,8 +116,8 @@ export default {
       )
       .addFields(embedFields)
       .setFooter(embedFooter)
-      .setImage(user.displayAvatarURL({ format: "png", dynamic: true }))
-      .setThumbnail(user.displayAvatarURL({ format: "png", dynamic: true }))
+      .setImage(user.displayAvatarURL(embedImage))
+      .setThumbnail(user.displayAvatarURL(embedImage))
       .setTimestamp();
   },
 } as ICommand;

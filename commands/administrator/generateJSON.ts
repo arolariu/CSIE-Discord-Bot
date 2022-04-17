@@ -1,7 +1,11 @@
-import { Guild, GuildMember, MessageEmbed } from "discord.js";
+import {
+  EmbedFieldData,
+  EmbedFooterData,
+  Guild,
+  MessageEmbed,
+} from "discord.js";
 import { ICommand } from "wokcommands";
 import IUser from "../../interfaces/User.interface";
-import getGuildMembersFromGuild from "../../utils/getGuildMembersFromGuild";
 import getIUserFromGuildMember from "../../utils/getIUserFromGuildMember";
 import fs from "fs";
 
@@ -14,16 +18,16 @@ export default {
   guildOnly: true,
   permissions: ["ADMINISTRATOR"],
   maxArgs: 1,
-  expectedArgs: "<path to the users json>",
+  expectedArgs: "<fullpath to the users json>",
   expectedArgsTypes: ["STRING"],
 
-  callback: async ({ interaction, client, args }) => {
+  callback: async ({ interaction, args }) => {
     const guild: Guild = interaction.guild!;
     const path = args.shift() ?? "./data/users.json";
 
     // 1. Fetching the users from the guild.
     const timeUntilFetchUsers = Date.now();
-    const guildMembers: GuildMember[] = await getGuildMembersFromGuild(guild);
+    const guildMembers = await guild.members.fetch();
     const timeAfterFetchUsers = Date.now();
 
     // 2. Adding the users to a JSON array object.
@@ -39,7 +43,7 @@ export default {
     const timeAfterWritingFile = Date.now();
 
     // 4. Sending a message to the channel.
-    const embedFields = [
+    const embedFields: EmbedFieldData[] = [
       {
         name: "Elapsed time for adding users:",
         value: `${timeAfterFetchUsers - timeUntilFetchUsers} ms.`,
@@ -69,16 +73,14 @@ export default {
       },
     ];
 
-    const embedFooter = {
+    const embedFooter: EmbedFooterData = {
       text: `${JSONArray.length} users have been found.`,
-      icon_url: client.user!.avatarURL(),
+      iconURL: process.env.EMBED_ICON,
     };
 
     return new MessageEmbed()
-      .setColor("#0099ff")
-      .setTitle(
-        `Generated JSON file for ${guild.name}. (${guildMembers.length} total users)`
-      )
+      .setColor("BLUE")
+      .setTitle(`Generated JSON file for ${guild.name}.`)
       .addFields(embedFields)
       .setFooter(embedFooter)
       .setTimestamp();

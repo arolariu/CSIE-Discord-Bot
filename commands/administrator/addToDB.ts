@@ -1,3 +1,4 @@
+import { Error } from "mongoose";
 import { ICommand } from "wokcommands";
 import IUser from "../../interfaces/User.interface";
 import UserModel from "../../models/User.model";
@@ -10,28 +11,28 @@ export default {
   testOnly: true,
   guildOnly: true,
   permissions: ["ADMINISTRATOR"],
-  cooldown: "5m",
+  //cooldown: "5m",
   maxArgs: 1,
   expectedArgs: "<path to the users json>",
   expectedArgsTypes: ["STRING"],
   callback: async ({ args }) => {
     const path = args.shift() ?? "../../data/users.json";
-    // 0. Fetch the user's JSON file.
-    let userDATA: IUser[] = [];
+    let users: IUser[] = [];
     try {
-      userDATA = require(path);
+      users = require(path);
     } catch (e) {
       return `Failed to fetch the users.json file.${e}`;
     }
 
-    // 1. For each user in the JSON file, add them to the database.
     const startTime = Date.now();
-    userDATA.forEach((user: IUser) => {
+    users.forEach((user: IUser) => {
       const userEntry = new UserModel(user);
-      // 2. Check if the user already exists in the database.
-      UserModel.findOne({ id: user.id }, (err: any, existingUser: IUser) => {
-        if (err) return `Error: ${err}`;
-        if (!existingUser) return userEntry.save();
+      // Check if the user already exists in the database.
+      const query = { id: user.id };
+      UserModel.findOne(query, (err: Error, dbUser: IUser) => {
+        if (err) return console.error(err);
+        if (!dbUser) userEntry.save();
+        else return console.log("Found:" + dbUser.username);
       });
     });
 

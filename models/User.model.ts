@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
   id: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
     primaryKey: true,
@@ -11,13 +11,24 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    default: "password",
+  },
+  email: {
+    type: String,
+  },
+  avatarURL: {
+    type: String,
+    default: "https://cdn.discordapp.com/embed/avatars/1.png",
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   discordTAG: {
     type: String,
     default: "NA",
-  },
-  avatar: {
-    type: String,
-    default: "https://cdn.discordapp.com/embed/avatars/1.png",
   },
   createdAt: {
     type: Date,

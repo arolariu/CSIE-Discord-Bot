@@ -9,7 +9,7 @@ export default {
   testOnly: true,
 
   cooldown: "10s",
-  callback: async ({ interaction: msgInt, channel }) => {
+  callback: async ({ interaction }) => {
     const row = new MessageActionRow()
       .addComponents(
         new MessageButton()
@@ -19,12 +19,12 @@ export default {
       )
       .addComponents(
         new MessageButton()
-          .setURL("https://blog.arolariu.ro")
-          .setLabel("Visit blog.arolariu.ro")
+          .setURL("https://itc.arolariu.ro")
+          .setLabel("Visit itc.arolariu.ro")
           .setStyle("LINK")
       );
 
-    await msgInt.reply({
+    await interaction.reply({
       content: "Visit my websites:",
       components: [row],
     });

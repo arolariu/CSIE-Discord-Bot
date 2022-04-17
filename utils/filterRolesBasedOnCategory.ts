@@ -1,4 +1,4 @@
-import { Role } from "discord.js";
+import { Collection, Role } from "discord.js";
 
 function filterByCareerPathRoles(role: Role): boolean {
   const filteredRoles = [
@@ -49,7 +49,7 @@ function filterToUseByCategory(category: string): (role: Role) => boolean {
 }
 
 export default function filterRolesBasedOnCategory(
-  roles: Role[],
+  roles: Collection<string, Role>,
   category: string
 ): Role[] {
   const filteredRoles: Role[] = [];

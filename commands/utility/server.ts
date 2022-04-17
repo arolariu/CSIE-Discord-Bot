@@ -1,4 +1,10 @@
-import { Guild, GuildMember, MessageEmbed } from "discord.js";
+import {
+  EmbedField,
+  EmbedFooterData,
+  Guild,
+  GuildMember,
+  MessageEmbed,
+} from "discord.js";
 import { ICommand } from "wokcommands";
 
 export default {
@@ -13,7 +19,7 @@ export default {
     const GUILD: Guild = await guild!.fetch();
     const OWNER: GuildMember = await GUILD.fetchOwner();
 
-    const embedFields = [
+    const embedFields: EmbedField[] = [
       {
         name: "Server description:",
         value: GUILD.description || "No description provided.",
@@ -60,9 +66,9 @@ export default {
         inline: true,
       },
     ];
-    const embedFooter = {
+    const embedFooter: EmbedFooterData = {
       text: `${GUILD.name} - Copyright © 2022 - ${OWNER.displayName}#${OWNER.user.discriminator}`,
-      icon_url: GUILD.iconURL() ?? process.env.EMBED_ICON!,
+      iconURL: GUILD.iconURL() ?? process.env.EMBED_ICON!,
     };
 
     return new MessageEmbed()

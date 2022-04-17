@@ -1,13 +1,12 @@
-import { GuildMember, Role, User } from "discord.js";
+import { Collection, GuildMember, Role, User } from "discord.js";
 import IUser from "../interfaces/User.interface";
-import getRolesFromGuildMember from "./getRolesFromGuildMember";
-import filterRolesBasedOnCategory from "./helpers/filterRolesBasedOnCategory";
+import filterRolesBasedOnCategory from "./filterRolesBasedOnCategory";
 
 export default function getIUserFromGuildMember(
   guildMember: GuildMember
 ): IUser {
   try {
-    const roles: Role[] = getRolesFromGuildMember(guildMember);
+    const roles: Collection<string, Role> = guildMember.roles.cache;
     const user: User = guildMember.user; // gets the discord user object.
     return {
       id: user.id,

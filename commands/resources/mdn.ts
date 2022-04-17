@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MessageEmbed } from "discord.js";
+import { EmbedAuthorData, MessageEmbed } from "discord.js";
 import { ICommand } from "wokcommands";
 
 export default {
@@ -21,12 +21,10 @@ export default {
     const documents = await (await axios(uri)).data.documents;
 
     if (documents) {
-      const embed = new MessageEmbed()
-        .setAuthor({
-          name: "MDN Documentation",
-          iconURL: "https://avatars.githubusercontent.com/u/7565578?s=200&v=4",
-        })
-        .setColor("GREEN");
+      const embed = new MessageEmbed().setColor("GREEN").setAuthor({
+        name: "MDN Documentation",
+        iconURL: "https://avatars.githubusercontent.com/u/7565578?s=200&v=4",
+      } as EmbedAuthorData);
 
       let truncated = false;
       if (documents.length > 3) {

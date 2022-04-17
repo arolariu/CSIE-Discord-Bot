@@ -13,11 +13,9 @@ export default {
     return new MessageEmbed()
       .setColor("RED")
       .setTitle("Pong!")
-      .setDescription(
-        "This command will return the connectivity information of the bot."
-      )
-      .addField("Latency:", `${client.ws.ping}ms`)
+      .setDescription("This command will return connectivity information.")
       .addField("Uptime:", `${require("pretty-ms")(client.uptime)}`)
+      .addField("Latency:", `${client.ws.ping}ms`)
       .addField("Gateway:", `${client.ws.gateway}`)
       .setFooter({
         text: process.env.EMBED_TEXT!,

@@ -54,6 +54,7 @@ export default {
         const mutedRole = guild.roles.cache.find((r) => r.name === "Muted");
         if (!mutedRole) return "Muted ('<Muted>') role not found.";
         await member.roles.add(mutedRole);
+        member.timeout(time, reason);
       }
       await new WarningModel({
         guildId: guild.id,
@@ -66,6 +67,6 @@ export default {
     } catch (e) {
       return `Cannot mute <@${user.id}>.`;
     }
-    return `<@${user.id}> has been muted. (duration:${time}).`;
+    return `<@${user.id}> has been muted. (duration:\`${time}\` minutes).`;
   },
 } as ICommand;

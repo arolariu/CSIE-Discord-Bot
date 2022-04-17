@@ -1,4 +1,4 @@
-import { EmbedFooterData, MessageEmbed } from "discord.js";
+import { EmbedField, EmbedFooterData, MessageEmbed } from "discord.js";
 import { ICommand } from "wokcommands";
 
 export default {
@@ -26,7 +26,7 @@ export default {
     const freeMemoryReadable = prettyBytes(freeMemory);
     const usedMemoryReadable = prettyBytes(totalMemory - freeMemory);
 
-    const embedFields = [
+    const embedFields: EmbedField[] = [
       {
         name: "Operating system:",
         value: os.platform() + " (" + os.type() + ")",

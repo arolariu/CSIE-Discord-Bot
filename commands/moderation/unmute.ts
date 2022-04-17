@@ -1,5 +1,7 @@
 import { User } from "discord.js";
+import { Error } from "mongoose";
 import { ICommand } from "wokcommands";
+import WarningModel from "../../models/Warning.model";
 
 export default {
   category: "Moderation",
@@ -25,6 +27,12 @@ export default {
     const mutedRole = guild.roles.cache.find((r) => r.name === "Muted");
     if (!mutedRole) return "Muted ('<Muted>') role not found.";
     await member.roles.remove(mutedRole);
+    const query = { id: userId };
+    WarningModel.findOneAndRemove(query, (err: Error, result: any) => {
+      if (err) return console.error(err);
+      if (!result) return "That user is not muted.";
+      return `<@${user.id}> has been unmuted by <@${staff.id}>.\nReason: ${reason}`;
+    });
     return `<@${user.id}> has been unmuted by <@${staff.id}>.\nReason: ${reason}`;
   },
 } as ICommand;
