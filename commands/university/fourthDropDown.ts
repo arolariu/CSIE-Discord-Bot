@@ -11,7 +11,7 @@ import { ICommand } from "wokcommands";
 
 export default {
   category: "Administrator",
-  name: "addRole",
+  name: "fourthDropDown",
   description: "Add a role to the auto role dropdown.",
   permissions: ["ADMINISTRATOR"],
   slash: true,
@@ -26,7 +26,7 @@ export default {
     client.on("interactionCreate", (interaction) => {
       if (!interaction.isSelectMenu()) return;
       const { customId, values, member } = interaction;
-      if (customId === "auto_roles" && member instanceof GuildMember) {
+      if (customId === "auto_rolesV4" && member instanceof GuildMember) {
         const component = interaction.component as MessageSelectMenu;
         const removed = component.options.filter((option) => {
           return !values.includes(option.value);
@@ -101,7 +101,7 @@ export default {
     } else {
       row.addComponents(
         new MessageSelectMenu()
-          .setCustomId("auto_roles")
+          .setCustomId("auto_rolesV4")
           .setMinValues(0)
           .setMaxValues(1)
           .setPlaceholder("Select your roles...")
