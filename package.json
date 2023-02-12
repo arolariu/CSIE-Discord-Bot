@@ -23,7 +23,7 @@
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "mongoose": "^6.2.0",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.20",
     "pretty-bytes": "^5.6.0",
     "pretty-ms": "^7.0.1",
     "wokcommands": "^1.5.3"
